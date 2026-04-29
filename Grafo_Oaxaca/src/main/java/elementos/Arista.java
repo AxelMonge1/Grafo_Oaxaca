@@ -12,6 +12,7 @@ public class Arista {
     public Nodo nodoOrigen;
     public Nodo nodoDestino;
     public float peso;
+    public boolean resaltada = false;
 
     public Arista() {
     }
@@ -20,6 +21,14 @@ public class Arista {
         this.nodoOrigen = nodoOrigen;
         this.nodoDestino = nodoDestino;
         this.peso = peso;
+    }
+
+    public boolean isResaltada() {
+        return resaltada;
+    }
+
+    public void setResaltada(boolean resaltada) {
+        this.resaltada = resaltada;
     }
 
     public Nodo getNodoOrigen() {
@@ -44,7 +53,5 @@ public class Arista {
 
     public void setPeso(float peso) {
         this.peso = peso;
-    }
-    
-    
+    }   
 }

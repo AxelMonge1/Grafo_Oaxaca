@@ -4,6 +4,7 @@
  */
 package elementos;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -98,5 +99,29 @@ public class Grafo {
             }
         }
         return false;
+    }
+    
+    public void resetearColores(){
+        for(Nodo v : vertices){
+            v.setColor(new Color(0, 110, 220));
+        }
+    }
+    
+    public List<Nodo> getNodosAdyacentesDe(Nodo nodo){
+        List<Nodo> nodos = new ArrayList<>();
+        for(Nodo v : vertices){
+            if(v.getMunicipio().equalsIgnoreCase(nodo.getMunicipio())){
+                nodos.add(v);
+            }
+        }
+        if(!nodos.isEmpty()){
+            Nodo aux = nodos.getFirst();
+            nodos = aux.getNodosAdyacentes();
+        }
+        return nodos;
+    }
+    
+    public List<Arista> getAristasDe(Nodo nodo){
+        return nodo.getAristas();
     }
 }

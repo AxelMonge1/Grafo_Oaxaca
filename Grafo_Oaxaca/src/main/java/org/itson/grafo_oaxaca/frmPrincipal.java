@@ -10,7 +10,7 @@ import javax.swing.JFrame;
  *
  * @author Dario
  */
-public class NewClass {
+public class frmPrincipal {
     public static void main(String[] args) {
         // 1. Configurar la ventana principal
         JFrame ventana = new JFrame("Mapa de Rutas - Oaxaca");
