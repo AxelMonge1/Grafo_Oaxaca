@@ -13,12 +13,28 @@ import java.util.Stack;
  * @author axelm
  */
 public class Grafo {
-    private List<Nodo> vertices;
-    private List<Arista> aristas;
+    private List<Nodo> vertices = new ArrayList<>();
+    private List<Arista> aristas = new ArrayList<>();
     
-    public void agregarNodo(String municipio){
-        Nodo nodo = new Nodo(municipio);
+    public void agregarNodo(String municipio, int x, int y){
+        Nodo nodo = new Nodo(municipio, x, y);
         vertices.add(nodo);
+    }
+
+    public List<Nodo> getVertices() {
+        return vertices;
+    }
+
+    public void setVertices(List<Nodo> vertices) {
+        this.vertices = vertices;
+    }
+
+    public List<Arista> getAristas() {
+        return aristas;
+    }
+
+    public void setAristas(List<Arista> aristas) {
+        this.aristas = aristas;
     }
     
     public void agregarArista(String origen, String destino, float peso) throws IllegalArgumentException{

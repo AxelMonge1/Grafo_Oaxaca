@@ -13,13 +13,16 @@ import java.util.List;
  */
 public class Nodo {
     private String municipio;
-    private List<Arista> aristas;
+    private int x,y;
+    private List<Arista> aristas = new ArrayList<>();
 
     public Nodo() {
     }
 
-    public Nodo(String municipio) {
+    public Nodo(String municipio, int x, int y) {
         this.municipio = municipio;
+        this.x = x;
+        this.y = y;
         this.aristas = new ArrayList<>();
     }
 
@@ -38,6 +41,24 @@ public class Nodo {
     public List<Arista> getAristas() {
         return aristas;
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+    
+    
     
     public List<Nodo> getNodosAdyacentes(){
         List<Nodo> nodos = new ArrayList<>();
