@@ -22,6 +22,7 @@ import javax.swing.Timer;
 public class MST {
     private Timer timer;
 
+    //Método que detiene el timer anterior si es que se habia inicializado uno
     public boolean detener() {
         if (timer != null && timer.isRunning()) {
             timer.stop();
@@ -30,6 +31,7 @@ public class MST {
         return false;
     }
     
+    //Muestra en texto el resultado del mst
     private void mostrarReporte(JPanel panel, String titulo, String contenido) {
         JTextArea textArea = new JTextArea(contenido);
         textArea.setEditable(false);
@@ -38,6 +40,12 @@ public class MST {
         JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(panel), scrollPane, titulo, JOptionPane.INFORMATION_MESSAGE);
     }
     
+    /**
+     * Método que obtiene el MST usando el método de Kruskal.
+     * Obtiene el MST in usar una raíz.
+     * @param grafo
+     * @param panel
+     */
     public void mstKruskal(Grafo grafo, JPanel panel) {
         detener();
         grafo.getVertices().forEach(v -> v.setColor(Color.WHITE));
@@ -79,12 +87,19 @@ public class MST {
                 ((Timer)e.getSource()).stop();
                 reporte.append("\n===========================\n");
                 reporte.append("PESO TOTAL DEL ÁRBOL: ").append(String.format("%.2f", pesoTotal[0])).append(" km");
-                mostrarReporte(panel, "¡Árbol de Kruskal finalizado!", reporte.toString());
+                mostrarReporte(panel, "Árbol de Kruskal finalizado", reporte.toString());
             }
         });
         timer.start();
     }
     
+    /**
+     * Método que obtiene el MST con el método de Prim.
+     * Usa un vertice raíz para obtener el MST partiendo de ahí.
+     * @param nombreRaiz
+     * @param grafo
+     * @param panel
+     */
     public void mstPrim(String nombreRaiz, Grafo grafo, JPanel panel) {
         detener();
         grafo.getVertices().forEach(v -> v.setColor(Color.WHITE));
@@ -142,7 +157,7 @@ public class MST {
                 panel.repaint();
                 reporte.append("\n===========================\n");
                 reporte.append("PESO TOTAL DEL ÁRBOL: ").append(String.format("%.2f", pesoTotal[0])).append(" km");
-                mostrarReporte(panel, "¡Árbol de Prim finalizado!", reporte.toString());
+                mostrarReporte(panel, "Árbol de Prim finalizado", reporte.toString());
             }
         });
         timer.start();

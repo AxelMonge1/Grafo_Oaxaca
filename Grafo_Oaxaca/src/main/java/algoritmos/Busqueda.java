@@ -22,6 +22,7 @@ import javax.swing.Timer;
 public class Busqueda {
     private Timer timer;
 
+    //Método que detiene el timer anterior si es que se habia inicializado uno
     public boolean detener() {
         if (timer != null && timer.isRunning()) {
             timer.stop();
@@ -30,6 +31,7 @@ public class Busqueda {
         return false;
     }
     
+    //Muestra en texto los municipios que paso por la busqueda mas la distancia
     private void mostrarReporte(JPanel panel, String titulo, String contenido) {
         JTextArea textArea = new JTextArea(contenido);
         textArea.setLineWrap(true);
@@ -40,6 +42,13 @@ public class Busqueda {
         JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(panel), scrollPane, titulo, JOptionPane.INFORMATION_MESSAGE);
     }
     
+    /**
+     * Método que visita todos los vertices de un grafo por anchura.
+     * Busca todos los vecinos de un vertice antes de pasarse a otro.
+     * @param municipio
+     * @param grafo
+     * @param panel
+     */
     public void busquedaAnchura(String municipio, Grafo grafo, JPanel panel){
         detener(); 
         grafo.getAristas().forEach(a -> a.setResaltada(false));
@@ -98,12 +107,19 @@ public class Busqueda {
                 raiz.setColor(Color.BLACK); 
                 panel.repaint();
                 String resultadoFinal = secuencia.substring(0, secuencia.length() - 4); 
-                mostrarReporte(panel, "¡Búsqueda en Anchura (BFS) finalizada!", resultadoFinal);
+                mostrarReporte(panel, "Búsqueda en Anchura (BFS) finalizada", resultadoFinal);
             }
         });
         timer.start();
     }
 
+    /**
+     * Método que recorre todos los vertices de un grafo por profundidad.
+     * Busca el cámino más lejano por cada vertice antes de continuar al siguiente vecino.
+     * @param municipio
+     * @param grafo
+     * @param panel
+     */
     public void busquedaProfundidad(String municipio, Grafo grafo, JPanel panel) {
         detener(); 
         grafo.getAristas().forEach(a -> a.setResaltada(false));
