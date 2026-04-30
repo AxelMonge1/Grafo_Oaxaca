@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package sistema;
 
 import elementos.Arista;
@@ -30,7 +26,9 @@ public class PanelMapa extends javax.swing.JPanel {
         initComponents();
     
         java.net.URL imgUrl = getClass().getResource("/mapa_oaxaca.png");
-        this.imagenFondo = new javax.swing.ImageIcon(imgUrl).getImage();
+        if (imgUrl != null) {
+            this.imagenFondo = new javax.swing.ImageIcon(imgUrl).getImage();
+        }
 
         this.grafo = new Grafo();
         inicializarDatos();
@@ -150,53 +148,74 @@ public class PanelMapa extends javax.swing.JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-    super.paintComponent(g);
-    Graphics2D g2 = (Graphics2D) g;
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-    g2.drawImage(imagenFondo, 0, 0, getWidth(), getHeight(), this);
-    
-    g2.setStroke(new BasicStroke(2.0f));
-    g2.setColor(new Color(120, 120, 120, 100)); 
-    for (Arista a : grafo.getAristas()) {
-        g2.drawLine(a.nodoOrigen.getX(), a.nodoOrigen.getY(), 
-                    a.nodoDestino.getX(), a.nodoDestino.getY());
-    }
-
-    Font fuenteNormal = new Font("SansSerif", Font.BOLD, 10);
-    Font fuenteCapital = new Font("SansSerif", Font.BOLD, 12); 
-    
-    Color azulMarino = new Color(0, 32, 96);
-    Color colorCapital = new Color(180, 0, 0);
-
-    for (Nodo n : grafo.getVertices()) {
-        int x = n.getX();
-        int y = n.getY();
-        String nombre = n.getMunicipio();
-
-        g2.setColor(new Color(0, 110, 220));
-        g2.fillOval(x - 9, y - 9, 18, 18);
-        g2.setColor(Color.WHITE);
-        g2.setStroke(new BasicStroke(1.5f));
-        g2.drawOval(x - 9, y - 9, 18, 18);
-
-        if (nombre.equals("Oaxaca")) {
-            g2.setFont(fuenteCapital);
-            g2.setColor(colorCapital);
-            int anchoOaxaca = g2.getFontMetrics().stringWidth(nombre);
-            g2.drawString(nombre, x - (anchoOaxaca / 2), y - 30);
-        } else {
-            g2.setFont(fuenteNormal);
-            g2.setColor(azulMarino);
-            int anchoTexto = g2.getFontMetrics().stringWidth(nombre);
-            if (nombre.equals("Atzompa") || nombre.equals("J. Amilpas") || 
-                nombre.equals("Xoxocotlán") || nombre.equals("Zaachila")) {
-                g2.drawString(nombre, x - anchoTexto - 14, y + 4);
-            } else if (nombre.equals("Nochixtlán") || nombre.equals("Tuxtepec") || nombre.equals("Loma Bonita")) {
-                g2.drawString(nombre, x - (anchoTexto / 2), y - 14);
+        if (imagenFondo != null) {
+            g2.drawImage(imagenFondo, 0, 0, getWidth(), getHeight(), this);
+        }
+        
+        // --- Aristas ---
+        for (Arista a : grafo.getAristas()) {
+            if (a.isResaltada()) {
+                // Ruta Activa
+                g2.setColor(new Color(255, 60, 60, 220)); 
+                g2.setStroke(new BasicStroke(4.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             } else {
-                g2.drawString(nombre, x + 14, y + 4);
+                // Ruta Inactiva
+                g2.setColor(new Color(100, 150, 200, 90)); 
+                g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             }
+            g2.drawLine(a.nodoOrigen.getX(), a.nodoOrigen.getY(), 
+                        a.nodoDestino.getX(), a.nodoDestino.getY());
+        }
+
+        Font fuenteNormal = new Font("Segoe UI", Font.BOLD, 11);
+        Font fuenteCapital = new Font("Segoe UI", Font.BOLD, 14);
+
+        // --- Nodos ---
+        for (Nodo n : grafo.getVertices()) {
+            int x = n.getX();
+            int y = n.getY();
+            String nombre = n.getMunicipio();
+
+            g2.setColor(new Color(0, 0, 0, 70));
+            g2.fillOval(x - 6, y - 6, 20, 20);
+
+            g2.setColor(n.getColor());
+            g2.fillOval(x - 9, y - 9, 18, 18);
+            
+            g2.setColor(Color.WHITE);
+            g2.setStroke(new BasicStroke(2.5f));
+            g2.drawOval(x - 9, y - 9, 18, 18);
+
+            g2.setFont(nombre.equals("Oaxaca") ? fuenteCapital : fuenteNormal);
+            int anchoTexto = g2.getFontMetrics().stringWidth(nombre);
+            
+            int textoX = x + 14;
+            int textoY = y + 4;
+            
+            if (nombre.equals("Oaxaca")) {
+                textoX = x - (anchoTexto / 2); textoY = y - 18;
+            } else if (nombre.equals("Atzompa") || nombre.equals("J. Amilpas") || 
+                       nombre.equals("Xoxocotlán") || nombre.equals("Zaachila")) {
+                textoX = x - anchoTexto - 14;
+            } else if (nombre.equals("Nochixtlán") || nombre.equals("Tuxtepec") || nombre.equals("Loma Bonita")) {
+                textoX = x - (anchoTexto / 2); textoY = y - 14;
+            }
+
+            g2.setColor(new Color(255, 255, 255, 200));
+            g2.drawString(nombre, textoX - 1, textoY - 1);
+            g2.drawString(nombre, textoX + 1, textoY - 1);
+            g2.drawString(nombre, textoX - 1, textoY + 1);
+            g2.drawString(nombre, textoX + 1, textoY + 1);
+            
+            g2.setColor(nombre.equals("Oaxaca") ? new Color(180, 0, 0) : new Color(30, 40, 50));
+            g2.drawString(nombre, textoX, textoY);
         }
     }
 }
@@ -204,4 +223,4 @@ public class PanelMapa extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-}
+

@@ -227,6 +227,8 @@ public class FrmMenuSistema extends javax.swing.JFrame {
 
         pnlTarjetas.setLayout(new java.awt.CardLayout());
 
+        panelRecorridos.setName("panelRecorridos"); // NOI18N
+
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setText("MENÚ RECORRIDOS");
 
@@ -262,7 +264,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                                 .addComponent(jLabel2)
                                 .addGap(18, 18, 18)
                                 .addComponent(cmbSemillaRecorridos, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(196, Short.MAX_VALUE))
+                .addContainerGap(281, Short.MAX_VALUE))
         );
         panelRecorridosLayout.setVerticalGroup(
             panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -281,6 +283,8 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         );
 
         pnlTarjetas.add(panelRecorridos, "recorridos");
+
+        panelMST.setName("panelMST"); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("MENÚ ÁRBOL DE EXPANSIÓN MÍNIMA");
@@ -328,7 +332,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                                 .addComponent(lblCiudadPrim)
                                 .addGap(18, 18, 18)
                                 .addComponent(cmbCiudadPrim, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(203, Short.MAX_VALUE))))
+                        .addContainerGap(288, Short.MAX_VALUE))))
         );
         panelMSTLayout.setVerticalGroup(
             panelMSTLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -347,6 +351,8 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         );
 
         pnlTarjetas.add(panelMST, "mst");
+
+        panelRutasCortas.setName("panelRutasCortas"); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel4.setText("MENÚ RUTAS MÁS CORTAS");
@@ -407,7 +413,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                                         .addGap(18, 18, 18)
                                         .addComponent(cmbDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(0, 0, Short.MAX_VALUE)))
-                                .addContainerGap(235, Short.MAX_VALUE))))))
+                                .addContainerGap(279, Short.MAX_VALUE))))))
         );
         panelRutasCortasLayout.setVerticalGroup(
             panelRutasCortasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -435,7 +441,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         pnlVacio.setLayout(pnlVacioLayout);
         pnlVacioLayout.setHorizontalGroup(
             pnlVacioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 669, Short.MAX_VALUE)
+            .addGap(0, 754, Short.MAX_VALUE)
         );
         pnlVacioLayout.setVerticalGroup(
             pnlVacioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -468,6 +474,8 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         );
 
         pnlContenedorMapa.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        pnlContenedorMapa.setPreferredSize(new java.awt.Dimension(1029, 713));
+        pnlContenedorMapa.setRequestFocusEnabled(false);
 
         javax.swing.GroupLayout pnlContenedorMapaLayout = new javax.swing.GroupLayout(pnlContenedorMapa);
         pnlContenedorMapa.setLayout(pnlContenedorMapaLayout);
@@ -477,7 +485,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         );
         pnlContenedorMapaLayout.setVerticalGroup(
             pnlContenedorMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 577, Short.MAX_VALUE)
+            .addGap(0, 709, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -513,6 +521,55 @@ public class FrmMenuSistema extends javax.swing.JFrame {
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
         // TODO add your handling code here:                                      
         
+        elementos.Grafo grafo = panelMapa.getGrafo();
+
+        // Sistema de elección de panel
+        java.awt.Component[] componentes = pnlTarjetas.getComponents();
+        for (java.awt.Component componente : componentes) {
+            if (componente.isVisible()) {
+
+                String nombreTarjeta = componente.getName();
+
+                // --- Panel RECORRIDOS ---
+                if ("panelRecorridos".equals(nombreTarjeta)) {
+                    algoritmos.Busqueda busqueda = new algoritmos.Busqueda();
+                    String semilla = cmbSemillaRecorridos.getSelectedItem().toString();
+
+                    if (rbtnBFS.isSelected()) {
+                        busqueda.busquedaAnchura(semilla, grafo, panelMapa);
+                    } else if (rbtnDFS.isSelected()) {
+                        busqueda.busquedaProfundidad(semilla, grafo, panelMapa);
+                    }
+                }
+
+                // --- Panel MST ---
+                else if ("panelMST".equals(nombreTarjeta)) {
+                    algoritmos.MST mst = new algoritmos.MST();
+
+                    if (rbtnKruskal.isSelected()) {
+                        mst.mstKruskal(grafo, panelMapa);
+                    } else if (rbtnPrim.isSelected()) {
+                        String inicial = cmbCiudadPrim.getSelectedItem().toString();
+                        mst.mstPrim(inicial, grafo, panelMapa);
+                    }
+                }
+
+                // --- Panel RUTAS CORTAS ---
+                else if ("panelRutasCortas".equals(nombreTarjeta)) {
+                    // faltan aquí
+                    String origen = cmbOrigen.getSelectedItem().toString();
+                    String destino = cmbDestino.getSelectedItem().toString();
+
+                    if (rbtnDijkstra.isSelected()) {
+                        javax.swing.JOptionPane.showMessageDialog(this, "Ejecutando Dijkstra de " + origen + " a " + destino + "\n(Método pendiente de implementar)");
+                    } else if (rbtnBellmanFord.isSelected()) {
+                        javax.swing.JOptionPane.showMessageDialog(this, "Ejecutando Bellman-Ford de " + origen + " a " + destino + "\n(Método pendiente de implementar)");
+                    }
+                }
+
+                break; 
+            }
+        }
     }//GEN-LAST:event_btnConfirmarActionPerformed
 
     private void btnRecorridosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecorridosActionPerformed
