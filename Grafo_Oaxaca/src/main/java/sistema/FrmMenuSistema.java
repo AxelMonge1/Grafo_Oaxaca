@@ -75,12 +75,6 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         btnConfirmar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         pnlTarjetas = new javax.swing.JPanel();
-        panelRecorridos = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        cmbSemillaRecorridos = new javax.swing.JComboBox<>();
-        rbtnBFS = new javax.swing.JRadioButton();
-        rbtnDFS = new javax.swing.JRadioButton();
         panelMST = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         rbtnKruskal = new javax.swing.JRadioButton();
@@ -95,7 +89,18 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         cmbOrigen = new javax.swing.JComboBox<>();
         lblDestino = new javax.swing.JLabel();
         cmbDestino = new javax.swing.JComboBox<>();
-        pnlVacio = new javax.swing.JPanel();
+        pnlVisualizacion = new javax.swing.JPanel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblNodos = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblAristas = new javax.swing.JTable();
+        panelRecorridos = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        cmbSemillaRecorridos = new javax.swing.JComboBox<>();
+        rbtnBFS = new javax.swing.JRadioButton();
+        rbtnDFS = new javax.swing.JRadioButton();
         pnlContenedorMapa = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -232,63 +237,6 @@ public class FrmMenuSistema extends javax.swing.JFrame {
 
         pnlTarjetas.setLayout(new java.awt.CardLayout());
 
-        panelRecorridos.setName("panelRecorridos"); // NOI18N
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel1.setText("MENÚ RECORRIDOS");
-
-        jLabel2.setLabelFor(cmbSemillaRecorridos);
-        jLabel2.setText("Ciudad Semilla:");
-
-        cmbSemillaRecorridos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        buttonGroupRecorridos.add(rbtnBFS);
-        rbtnBFS.setSelected(true);
-        rbtnBFS.setText("BFS (Anchura)");
-
-        buttonGroupRecorridos.add(rbtnDFS);
-        rbtnDFS.setText("DFS (Profunidad)");
-
-        javax.swing.GroupLayout panelRecorridosLayout = new javax.swing.GroupLayout(panelRecorridos);
-        panelRecorridos.setLayout(panelRecorridosLayout);
-        panelRecorridosLayout.setHorizontalGroup(
-            panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelRecorridosLayout.createSequentialGroup()
-                .addGroup(panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelRecorridosLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
-                    .addGroup(panelRecorridosLayout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addGroup(panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelRecorridosLayout.createSequentialGroup()
-                                .addComponent(rbtnBFS)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(rbtnDFS))
-                            .addGroup(panelRecorridosLayout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(18, 18, 18)
-                                .addComponent(cmbSemillaRecorridos, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(281, Short.MAX_VALUE))
-        );
-        panelRecorridosLayout.setVerticalGroup(
-            panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelRecorridosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addGroup(panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rbtnBFS)
-                    .addComponent(rbtnDFS))
-                .addGap(18, 18, 18)
-                .addGroup(panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(cmbSemillaRecorridos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(56, Short.MAX_VALUE))
-        );
-
-        pnlTarjetas.add(panelRecorridos, "recorridos");
-
         panelMST.setName("panelMST"); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -352,7 +300,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                 .addGroup(panelMSTLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCiudadPrim)
                     .addComponent(cmbCiudadPrim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addContainerGap(131, Short.MAX_VALUE))
         );
 
         pnlTarjetas.add(panelMST, "mst");
@@ -437,23 +385,113 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                 .addGroup(panelRutasCortasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblDestino)
                     .addComponent(cmbDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
 
         pnlTarjetas.add(panelRutasCortas, "rutas");
 
-        javax.swing.GroupLayout pnlVacioLayout = new javax.swing.GroupLayout(pnlVacio);
-        pnlVacio.setLayout(pnlVacioLayout);
-        pnlVacioLayout.setHorizontalGroup(
-            pnlVacioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 754, Short.MAX_VALUE)
+        pnlVisualizacion.setLayout(new java.awt.BorderLayout());
+
+        jTabbedPane1.setMinimumSize(new java.awt.Dimension(751, 462));
+        jTabbedPane1.setPreferredSize(new java.awt.Dimension(751, 462));
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(750, 150));
+        jScrollPane1.setRequestFocusEnabled(false);
+
+        tblNodos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tblNodos);
+
+        jTabbedPane1.addTab("Nodos", jScrollPane1);
+
+        jScrollPane2.setMinimumSize(new java.awt.Dimension(750, 150));
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(750, 150));
+
+        tblAristas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tblAristas.setPreferredSize(new java.awt.Dimension(0, 0));
+        jScrollPane2.setViewportView(tblAristas);
+
+        jTabbedPane1.addTab("Aristas", jScrollPane2);
+
+        pnlVisualizacion.add(jTabbedPane1, java.awt.BorderLayout.CENTER);
+
+        pnlTarjetas.add(pnlVisualizacion, "vacio");
+
+        panelRecorridos.setName("panelRecorridos"); // NOI18N
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel1.setText("MENÚ RECORRIDOS");
+
+        jLabel2.setLabelFor(cmbSemillaRecorridos);
+        jLabel2.setText("Ciudad Semilla:");
+
+        cmbSemillaRecorridos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        buttonGroupRecorridos.add(rbtnBFS);
+        rbtnBFS.setSelected(true);
+        rbtnBFS.setText("BFS (Anchura)");
+
+        buttonGroupRecorridos.add(rbtnDFS);
+        rbtnDFS.setText("DFS (Profunidad)");
+
+        javax.swing.GroupLayout panelRecorridosLayout = new javax.swing.GroupLayout(panelRecorridos);
+        panelRecorridos.setLayout(panelRecorridosLayout);
+        panelRecorridosLayout.setHorizontalGroup(
+            panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelRecorridosLayout.createSequentialGroup()
+                .addGroup(panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelRecorridosLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1))
+                    .addGroup(panelRecorridosLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelRecorridosLayout.createSequentialGroup()
+                                .addComponent(rbtnBFS)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(rbtnDFS))
+                            .addGroup(panelRecorridosLayout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(cmbSemillaRecorridos, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(281, Short.MAX_VALUE))
         );
-        pnlVacioLayout.setVerticalGroup(
-            pnlVacioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 157, Short.MAX_VALUE)
+        panelRecorridosLayout.setVerticalGroup(
+            panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelRecorridosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addGroup(panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rbtnBFS)
+                    .addComponent(rbtnDFS))
+                .addGap(18, 18, 18)
+                .addGroup(panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(cmbSemillaRecorridos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(131, Short.MAX_VALUE))
         );
 
-        pnlTarjetas.add(pnlVacio, "vacio");
+        pnlTarjetas.add(panelRecorridos, "recorridos");
 
         javax.swing.GroupLayout pnlInferiorLayout = new javax.swing.GroupLayout(pnlInferior);
         pnlInferior.setLayout(pnlInferiorLayout);
@@ -474,8 +512,10 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                 .addComponent(btnConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(pnlTarjetas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(98, Short.MAX_VALUE))
+            .addGroup(pnlInferiorLayout.createSequentialGroup()
+                .addComponent(pnlTarjetas, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pnlContenedorMapa.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -508,14 +548,14 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlOpciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlContenedorMapa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pnlContenedorMapa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(pnlInferior, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(pnlOpciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(pnlInferior, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -620,17 +660,15 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         
         motorBusqueda.detener();
         motorMST.detener();
-        
-        // Selecciona un panel vacío en el panel inferior ya que no ocupamos botónes
-        java.awt.CardLayout layout = (java.awt.CardLayout) pnlTarjetas.getLayout();
-        layout.show(pnlTarjetas, "vacio");
-        
+
         elementos.Grafo grafo = panelMapa.getGrafo();
         grafo.resetearColores(); 
+        for(elementos.Arista a : grafo.getAristas()) { a.setResaltada(false); }
+        panelMapa.repaint();
 
-        for(elementos.Arista a : grafo.getAristas()) {
-            a.setResaltada(false); 
-        }
+        cargarTablasVisualizacion();
+        java.awt.CardLayout layout = (java.awt.CardLayout) pnlTarjetas.getLayout();
+        layout.show(pnlTarjetas, "vacio"); 
 
         panelMapa.repaint();
 
@@ -735,7 +773,30 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new FrmMenuSistema().setVisible(true));
     }
     
+    private void cargarTablasVisualizacion() {
+        elementos.Grafo grafo = panelMapa.getGrafo();
 
+        // --- Configurar Tabla de Nodos ---
+        String[] colNodos = {"Municipio", "Coord X", "Coord Y"};
+        javax.swing.table.DefaultTableModel modelNodos = new javax.swing.table.DefaultTableModel(colNodos, 0);
+
+        for (elementos.Nodo n : grafo.getVertices()) {
+            Object[] fila = {n.getMunicipio(), n.getX(), n.getY()};
+            modelNodos.addRow(fila);
+        }
+        tblNodos.setModel(modelNodos);
+
+        // --- Configurar Tabla de Aristas ---
+        String[] colAristas = {"Origen", "Destino", "Distancia (km)"};
+        javax.swing.table.DefaultTableModel modelAristas = new javax.swing.table.DefaultTableModel(colAristas, 0);
+
+        for (elementos.Arista a : grafo.getAristas()) {
+            Object[] fila = {a.nodoOrigen.getMunicipio(), a.nodoDestino.getMunicipio(), (int)a.getPeso() + " km"};
+            modelAristas.addRow(fila);
+        }
+        tblNodos.setModel(modelAristas);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnArbolMinimo;
     private javax.swing.JButton btnAyuda;
@@ -757,6 +818,9 @@ public class FrmMenuSistema extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblCiudadPrim;
     private javax.swing.JLabel lblDestino;
     private javax.swing.JLabel lblOrigen;
@@ -767,12 +831,14 @@ public class FrmMenuSistema extends javax.swing.JFrame {
     private javax.swing.JPanel pnlInferior;
     private javax.swing.JPanel pnlOpciones;
     private javax.swing.JPanel pnlTarjetas;
-    private javax.swing.JPanel pnlVacio;
+    private javax.swing.JPanel pnlVisualizacion;
     private javax.swing.JRadioButton rbtnBFS;
     private javax.swing.JRadioButton rbtnBellmanFord;
     private javax.swing.JRadioButton rbtnDFS;
     private javax.swing.JRadioButton rbtnDijkstra;
     private javax.swing.JRadioButton rbtnKruskal;
     private javax.swing.JRadioButton rbtnPrim;
+    private javax.swing.JTable tblAristas;
+    private javax.swing.JTable tblNodos;
     // End of variables declaration//GEN-END:variables
 }

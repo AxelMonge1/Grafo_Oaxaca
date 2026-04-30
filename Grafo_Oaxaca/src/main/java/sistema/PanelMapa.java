@@ -6,6 +6,7 @@ import elementos.Nodo;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -180,23 +181,41 @@ public class PanelMapa extends javax.swing.JPanel {
             }
             g2.drawLine(x1, y1, x2, y2);
 
-            // Textos de KM
+            // --- TEXTOS DE KM ---
             if (!hayAnimacion) {
-                int midX = (x1 + x2) / 2;
-                int midY = (y1 + y2) / 2;
+                double dx = x2 - x1;
+                double dy = y2 - y1;
+                double distVisual = Math.hypot(dx, dy);
                 
-                g2.setFont(new Font("Segoe UI", Font.BOLD, 10));
-                String pesoTx = (int)a.getPeso() + " km";
-                
-                g2.setColor(new Color(255, 255, 255, 220));
-                g2.drawString(pesoTx, midX - 1, midY - 1);
-                g2.drawString(pesoTx, midX + 1, midY + 1);
-                
-                g2.setColor(new Color(60, 60, 60));
-                g2.drawString(pesoTx, midX, midY);
+                if (distVisual > 30) {
+                    int midX = (x1 + x2) / 2;
+                    int midY = (y1 + y2) / 2;
+                    
+                    double nx = -dy / distVisual;
+                    double ny = dx / distVisual;
+                    
+                    int separacion = 12;
+                    int drawX = (int) (midX + nx * separacion);
+                    int drawY = (int) (midY + ny * separacion);
+                    
+                    g2.setFont(new Font("Segoe UI", Font.BOLD, 9));
+                    String pesoTx = distVisual < 55 ? String.valueOf((int)a.getPeso()) : (int)a.getPeso() + " km";
+                    
+                    FontMetrics fm = g2.getFontMetrics();
+                    int textW = fm.stringWidth(pesoTx);
+                    
+                    g2.setColor(new Color(255, 255, 255, 200));
+                    g2.drawString(pesoTx, drawX - (textW/2) - 1, drawY - 1);
+                    g2.drawString(pesoTx, drawX - (textW/2) + 1, drawY + 1);
+                    g2.drawString(pesoTx, drawX - (textW/2) - 1, drawY + 1);
+                    g2.drawString(pesoTx, drawX - (textW/2) + 1, drawY - 1);
+                    
+                    g2.setColor(new Color(40, 70, 110)); 
+                    g2.drawString(pesoTx, drawX - (textW/2), drawY);
+                }
             }
         }
-
+        
         // --- NODOS ---
         Font fuenteNormal = new Font("Segoe UI", Font.BOLD, 11);
         Font fuenteCapital = new Font("Segoe UI", Font.BOLD, 14);
