@@ -31,17 +31,21 @@ public class RutaCorta {
     public void dijkstra(String origen, String destino, Grafo grafo, JPanel panel) {
         detener();
         resetGrafo(grafo);
-        
+
         Nodo nodoOrigen = grafo.buscarNodo(origen);
         Nodo nodoDestino = grafo.buscarNodo(destino);
-        if (nodoOrigen == null || nodoDestino == null) return;
 
+        if (nodoOrigen == null || nodoDestino == null) {
+            JOptionPane.showMessageDialog(panel, "Una o ambas ciudades no existen en el mapa.");
+            return;
+        }
+        
         Map<Nodo, Float> distancias = new HashMap<>();
         Map<Nodo, Nodo> padres = new HashMap<>();
         Map<Nodo, Arista> aristasCamino = new HashMap<>();
         StringBuilder tablaEvolucion = new StringBuilder("Evolución de Distancias (Dijkstra):\n");
-        
-        PriorityQueue<Nodo> cola = new PriorityQueue<>(Comparator.comparingDouble(distancias::get));
+
+        PriorityQueue<Nodo> cola = new PriorityQueue<>(Comparator.comparingDouble(n -> distancias.get(n)));
         Set<Nodo> visitados = new HashSet<>();
 
         grafo.getVertices().forEach(v -> distancias.put(v, Float.MAX_VALUE));
@@ -51,23 +55,30 @@ public class RutaCorta {
         timer = new Timer(400, e -> {
             if (!cola.isEmpty()) {
                 Nodo actual = cola.poll();
+
                 if (visitados.contains(actual)) return;
                 visitados.add(actual);
-                
+
                 actual.setColor(new Color(0, 150, 0));
-                
-                tablaEvolucion.append("Procesando ").append(actual.getMunicipio())
-                              .append(": ").append(distancias.get(actual)).append(" km\n");
+
+                tablaEvolucion.append(String.format("Ciudad: %-20s | Distancia Acumulada: %.2f km\n", 
+                                      actual.getMunicipio(), distancias.get(actual)));
 
                 for (Arista a : grafo.getAristas()) {
                     Nodo vecino = obtenerVecino(a, actual);
+
                     if (vecino != null && !visitados.contains(vecino)) {
                         float nuevaDist = distancias.get(actual) + a.getPeso();
+
                         if (nuevaDist < distancias.get(vecino)) {
+                            cola.remove(vecino);
+
                             distancias.put(vecino, nuevaDist);
                             padres.put(vecino, actual);
                             aristasCamino.put(vecino, a);
+
                             cola.add(vecino);
+
                             vecino.setColor(Color.LIGHT_GRAY);
                         }
                     }
@@ -75,7 +86,9 @@ public class RutaCorta {
                 panel.repaint();
             } else {
                 ((Timer)e.getSource()).stop();
+
                 resaltarCaminoFinal(nodoDestino, aristasCamino, padres, panel);
+
                 String reporte = generarReporteFinal(nodoOrigen, nodoDestino, distancias, padres, tablaEvolucion.toString());
                 mostrarReporte(panel, "Resultado Dijkstra", reporte);
             }
