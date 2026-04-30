@@ -161,7 +161,7 @@ public class Busqueda {
                 raiz.setColor(Color.BLACK);
                 panel.repaint();
                 String resultadoFinal = secuencia.substring(0, secuencia.length() - 4);
-                mostrarReporte(panel, "¡Búsqueda en Profundidad (DFS) finalizada!", resultadoFinal);
+                mostrarReporte(panel, "Búsqueda en Profundidad finalizada", resultadoFinal);
             }
         });
         timer.start();
