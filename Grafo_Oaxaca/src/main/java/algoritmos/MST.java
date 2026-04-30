@@ -38,6 +38,12 @@ public class MST {
         JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(panel), scrollPane, titulo, JOptionPane.INFORMATION_MESSAGE);
     }
     
+    /**
+     * Método que maneja el algoritmo MST Kruskal
+     * 
+     * @param grafo
+     * @param panel 
+     */
     public void mstKruskal(Grafo grafo, JPanel panel) {
         detener();
         grafo.getVertices().forEach(v -> v.setColor(Color.WHITE));
@@ -85,9 +91,19 @@ public class MST {
         timer.start();
     }
     
+    /**
+     * Método que maneja el Algoritmo MST Prim
+     * 
+     * @param nombreRaiz
+     * @param grafo
+     * @param panel 
+     */
     public void mstPrim(String nombreRaiz, Grafo grafo, JPanel panel) {
         detener();
-        grafo.getVertices().forEach(v -> v.setColor(Color.WHITE));
+        grafo.getVertices().forEach(v -> {
+            v.setColor(Color.WHITE);
+            v.setEnConjuntoS(false); 
+        });
         grafo.getAristas().forEach(a -> a.setResaltada(false));
         panel.repaint();
 
@@ -99,12 +115,13 @@ public class MST {
 
         Set<Nodo> conjuntoS = new HashSet<>();
         conjuntoS.add(raiz);
+        raiz.setEnConjuntoS(true); 
 
         StringBuilder reporte = new StringBuilder("Aristas seleccionadas (Prim):\n\n");
         double[] pesoTotal = {0.0}; 
         final boolean[] raizFlash = {true};
 
-        timer = new Timer(800, e -> {
+        timer = new Timer(1000, e -> {
             raiz.setColor(raizFlash[0] ? Color.CYAN : Color.YELLOW);
             raizFlash[0] = !raizFlash[0];
 
@@ -115,7 +132,7 @@ public class MST {
                 boolean origenEnS = conjuntoS.contains(a.nodoOrigen);
                 boolean destinoEnS = conjuntoS.contains(a.nodoDestino);
 
-                if (origenEnS ^ destinoEnS) {
+                if (origenEnS ^ destinoEnS) { 
                     if (a.getPeso() < pesoMinimo) {
                         pesoMinimo = a.getPeso();
                         aristaLigera = a;
@@ -128,6 +145,8 @@ public class MST {
                 
                 Nodo nodoCruzado = conjuntoS.contains(aristaLigera.nodoOrigen) ? aristaLigera.nodoDestino : aristaLigera.nodoOrigen;
                 conjuntoS.add(nodoCruzado);
+                
+                nodoCruzado.setEnConjuntoS(true); 
                 if (nodoCruzado != raiz) nodoCruzado.setColor(Color.BLACK); 
                 
                 pesoTotal[0] += aristaLigera.getPeso();
@@ -139,7 +158,10 @@ public class MST {
             } else {
                 ((Timer)e.getSource()).stop();
                 raiz.setColor(Color.BLACK); 
+                
+                grafo.getVertices().forEach(v -> v.setEnConjuntoS(false)); 
                 panel.repaint();
+                
                 reporte.append("\n===========================\n");
                 reporte.append("PESO TOTAL DEL ÁRBOL: ").append(String.format("%.2f", pesoTotal[0])).append(" km");
                 mostrarReporte(panel, "¡Árbol de Prim finalizado!", reporte.toString());

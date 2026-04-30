@@ -13,6 +13,7 @@ public class Arista {
     public Nodo nodoDestino;
     public float peso;
     public boolean resaltada = false;
+    public boolean enCorte = false;
 
     public Arista() {
     }
@@ -54,4 +55,12 @@ public class Arista {
     public void setPeso(float peso) {
         this.peso = peso;
     }   
+    
+    public boolean isEnCorte() {
+        return enCorte;
+    }
+
+    public void setEnCorte(boolean enCorte) {
+        this.enCorte = enCorte;
+    }
 }

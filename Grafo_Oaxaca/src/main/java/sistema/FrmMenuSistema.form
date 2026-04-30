@@ -106,7 +106,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="btnArbolMinimo" min="-2" pref="67" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="btnRutasCortas" min="-2" pref="71" max="-2" attributes="0"/>
+                  <Component id="btnRutasCortas" min="-2" pref="66" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="btnVisualizacion" min="-2" pref="69" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>

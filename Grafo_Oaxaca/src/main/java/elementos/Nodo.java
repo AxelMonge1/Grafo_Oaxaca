@@ -17,6 +17,7 @@ public class Nodo {
     private int x,y;
     private List<Arista> aristas = new ArrayList<>();
     private Color color = new Color(0, 110, 220); //Para los metodos que usan colores en los nodos
+    private boolean enConjuntoS = false;
 
     public Nodo() {
     }
@@ -70,6 +71,14 @@ public class Nodo {
 
     public void setY(int y) {
         this.y = y;
+    }
+    
+    public boolean isEnConjuntoS() {
+        return enConjuntoS;
+    }
+
+    public void setEnConjuntoS(boolean enConjuntoS) {
+        this.enConjuntoS = enConjuntoS;
     }
     
     public List<Nodo> getNodosAdyacentes(){

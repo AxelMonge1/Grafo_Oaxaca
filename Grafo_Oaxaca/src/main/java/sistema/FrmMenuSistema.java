@@ -201,7 +201,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnArbolMinimo, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRutasCortas, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnRutasCortas, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnVisualizacion, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -775,11 +775,14 @@ public class FrmMenuSistema extends javax.swing.JFrame {
     
     private void cargarTablasVisualizacion() {
         elementos.Grafo grafo = panelMapa.getGrafo();
+        
+        tblNodos.setPreferredSize(null);
+        tblAristas.setPreferredSize(null);
 
         // --- Configurar Tabla de Nodos ---
         String[] colNodos = {"Municipio", "Coord X", "Coord Y"};
         javax.swing.table.DefaultTableModel modelNodos = new javax.swing.table.DefaultTableModel(colNodos, 0);
-
+        
         for (elementos.Nodo n : grafo.getVertices()) {
             Object[] fila = {n.getMunicipio(), n.getX(), n.getY()};
             modelNodos.addRow(fila);
@@ -789,12 +792,12 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         // --- Configurar Tabla de Aristas ---
         String[] colAristas = {"Origen", "Destino", "Distancia (km)"};
         javax.swing.table.DefaultTableModel modelAristas = new javax.swing.table.DefaultTableModel(colAristas, 0);
-
+        
         for (elementos.Arista a : grafo.getAristas()) {
             Object[] fila = {a.nodoOrigen.getMunicipio(), a.nodoDestino.getMunicipio(), (int)a.getPeso() + " km"};
             modelAristas.addRow(fila);
         }
-        tblNodos.setModel(modelAristas);
+        tblAristas.setModel(modelAristas);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
