@@ -103,7 +103,7 @@ public class Grafo {
     
     public void resetearColores(){
         for(Nodo v : vertices){
-            v.setColor(new Color(0, 110, 220));
+            v.setColor(Color.WHITE);
         }
     }
     
