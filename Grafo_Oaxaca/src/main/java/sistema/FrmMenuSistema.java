@@ -6,7 +6,9 @@ package sistema;
  */
 public class FrmMenuSistema extends javax.swing.JFrame {
     
-    private sistema.PanelMapa panelMapa;
+    private PanelMapa panelMapa;
+    private algoritmos.Busqueda motorBusqueda = new algoritmos.Busqueda();
+    private algoritmos.MST motorMST = new algoritmos.MST();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmMenuSistema.class.getName());
         
     /**
@@ -218,6 +220,9 @@ public class FrmMenuSistema extends javax.swing.JFrame {
             }
         });
 
+        btnCancelar.setBackground(new java.awt.Color(255, 50, 64));
+        btnCancelar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("CANCELAR");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -413,7 +418,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                                         .addGap(18, 18, 18)
                                         .addComponent(cmbDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(0, 0, Short.MAX_VALUE)))
-                                .addContainerGap(279, Short.MAX_VALUE))))))
+                                .addContainerGap(314, Short.MAX_VALUE))))))
         );
         panelRutasCortasLayout.setVerticalGroup(
             panelRutasCortasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -520,6 +525,8 @@ public class FrmMenuSistema extends javax.swing.JFrame {
 
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
         // TODO add your handling code here:                                      
+        motorBusqueda.detener();
+        motorMST.detener();
         
         elementos.Grafo grafo = panelMapa.getGrafo();
 
@@ -532,25 +539,22 @@ public class FrmMenuSistema extends javax.swing.JFrame {
 
                 // --- Panel RECORRIDOS ---
                 if ("panelRecorridos".equals(nombreTarjeta)) {
-                    algoritmos.Busqueda busqueda = new algoritmos.Busqueda();
                     String semilla = cmbSemillaRecorridos.getSelectedItem().toString();
-
+                    
                     if (rbtnBFS.isSelected()) {
-                        busqueda.busquedaAnchura(semilla, grafo, panelMapa);
+                        motorBusqueda.busquedaAnchura(semilla, grafo, panelMapa);
                     } else if (rbtnDFS.isSelected()) {
-                        busqueda.busquedaProfundidad(semilla, grafo, panelMapa);
+                        motorBusqueda.busquedaProfundidad(semilla, grafo, panelMapa);
                     }
                 }
 
                 // --- Panel MST ---
                 else if ("panelMST".equals(nombreTarjeta)) {
-                    algoritmos.MST mst = new algoritmos.MST();
-
                     if (rbtnKruskal.isSelected()) {
-                        mst.mstKruskal(grafo, panelMapa);
+                        motorMST.mstKruskal(grafo, panelMapa);
                     } else if (rbtnPrim.isSelected()) {
                         String inicial = cmbCiudadPrim.getSelectedItem().toString();
-                        mst.mstPrim(inicial, grafo, panelMapa);
+                        motorMST.mstPrim(inicial, grafo, panelMapa);
                     }
                 }
 
@@ -598,14 +602,37 @@ public class FrmMenuSistema extends javax.swing.JFrame {
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         // TODO add your handling code here:
+        
+        // Sistema de detención de la corrida del algoritmo
+        boolean seDetuvoBusqueda = motorBusqueda.detener();
+        boolean seDetuvoMST = motorMST.detener();
+        
+        if (seDetuvoBusqueda || seDetuvoMST) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "La ejecución del algoritmo ha sido cancelada.", 
+                "Ejecución Detenida", 
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnVisualizacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVisualizacionActionPerformed
         // TODO add your handling code here:
         
+        motorBusqueda.detener();
+        motorMST.detener();
+        
         // Selecciona un panel vacío en el panel inferior ya que no ocupamos botónes
         java.awt.CardLayout layout = (java.awt.CardLayout) pnlTarjetas.getLayout();
         layout.show(pnlTarjetas, "vacio");
+        
+        elementos.Grafo grafo = panelMapa.getGrafo();
+        grafo.resetearColores(); 
+
+        for(elementos.Arista a : grafo.getAristas()) {
+            a.setResaltada(false); 
+        }
+
+        panelMapa.repaint();
 
     }//GEN-LAST:event_btnVisualizacionActionPerformed
 

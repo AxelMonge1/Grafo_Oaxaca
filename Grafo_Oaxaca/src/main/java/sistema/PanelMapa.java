@@ -147,55 +147,77 @@ public class PanelMapa extends javax.swing.JPanel {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        
+    protected void paintComponent(java.awt.Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
+        java.awt.Graphics2D g2 = (java.awt.Graphics2D) g;
         
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         if (imagenFondo != null) {
             g2.drawImage(imagenFondo, 0, 0, getWidth(), getHeight(), this);
         }
         
-        // --- Aristas ---
+        // --- ARISTAS Y PESOS ---
+        boolean hayAnimacion = grafo.getAristas().stream().anyMatch(Arista::isResaltada);
+        
         for (Arista a : grafo.getAristas()) {
+            int x1 = a.nodoOrigen.getX();
+            int y1 = a.nodoOrigen.getY();
+            int x2 = a.nodoDestino.getX();
+            int y2 = a.nodoDestino.getY();
+
             if (a.isResaltada()) {
-                // Ruta Activa
-                g2.setColor(new Color(255, 60, 60, 220)); 
-                g2.setStroke(new BasicStroke(4.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                g2.setColor(new java.awt.Color(50, 0, 0, 150)); 
+                g2.setStroke(new java.awt.BasicStroke(5.5f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND));
+                g2.drawLine(x1, y1 + 2, x2, y2 + 2); 
+                
+                g2.setColor(new java.awt.Color(255, 40, 40, 240)); 
+                g2.setStroke(new java.awt.BasicStroke(4.0f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND));
             } else {
-                // Ruta Inactiva
-                g2.setColor(new Color(100, 150, 200, 90)); 
-                g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+               
+                g2.setColor(new java.awt.Color(100, 150, 200, 90)); 
+                g2.setStroke(new java.awt.BasicStroke(2.0f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND));
             }
-            g2.drawLine(a.nodoOrigen.getX(), a.nodoOrigen.getY(), 
-                        a.nodoDestino.getX(), a.nodoDestino.getY());
+            g2.drawLine(x1, y1, x2, y2);
+
+            if (!hayAnimacion) {
+                int midX = (x1 + x2) / 2;
+                int midY = (y1 + y2) / 2;
+                
+                g2.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+                String pesoTx = (int)a.getPeso() + " km";
+                
+                g2.setColor(new java.awt.Color(255, 255, 255, 220));
+                g2.drawString(pesoTx, midX - 1, midY - 1);
+                g2.drawString(pesoTx, midX + 1, midY + 1);
+                
+                g2.setColor(new java.awt.Color(60, 60, 60));
+                g2.drawString(pesoTx, midX, midY);
+            }
         }
 
-        Font fuenteNormal = new Font("Segoe UI", Font.BOLD, 11);
-        Font fuenteCapital = new Font("Segoe UI", Font.BOLD, 14);
+        // --- NODOS ---
+        java.awt.Font fuenteNormal = new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11);
+        java.awt.Font fuenteCapital = new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14);
 
-        // --- Nodos ---
         for (Nodo n : grafo.getVertices()) {
             int x = n.getX();
             int y = n.getY();
             String nombre = n.getMunicipio();
 
-            g2.setColor(new Color(0, 0, 0, 70));
+            g2.setColor(new java.awt.Color(0, 0, 0, 70));
             g2.fillOval(x - 6, y - 6, 20, 20);
 
             g2.setColor(n.getColor());
             g2.fillOval(x - 9, y - 9, 18, 18);
             
-            g2.setColor(Color.WHITE);
-            g2.setStroke(new BasicStroke(2.5f));
+            g2.setColor(java.awt.Color.DARK_GRAY);
+            g2.setStroke(new java.awt.BasicStroke(2.0f));
             g2.drawOval(x - 9, y - 9, 18, 18);
 
             g2.setFont(nombre.equals("Oaxaca") ? fuenteCapital : fuenteNormal);
             int anchoTexto = g2.getFontMetrics().stringWidth(nombre);
-            
             int textoX = x + 14;
             int textoY = y + 4;
             
@@ -208,13 +230,11 @@ public class PanelMapa extends javax.swing.JPanel {
                 textoX = x - (anchoTexto / 2); textoY = y - 14;
             }
 
-            g2.setColor(new Color(255, 255, 255, 200));
+            g2.setColor(new java.awt.Color(255, 255, 255, 200));
             g2.drawString(nombre, textoX - 1, textoY - 1);
-            g2.drawString(nombre, textoX + 1, textoY - 1);
-            g2.drawString(nombre, textoX - 1, textoY + 1);
             g2.drawString(nombre, textoX + 1, textoY + 1);
             
-            g2.setColor(nombre.equals("Oaxaca") ? new Color(180, 0, 0) : new Color(30, 40, 50));
+            g2.setColor(nombre.equals("Oaxaca") ? new java.awt.Color(180, 0, 0) : new java.awt.Color(30, 40, 50));
             g2.drawString(nombre, textoX, textoY);
         }
     }
