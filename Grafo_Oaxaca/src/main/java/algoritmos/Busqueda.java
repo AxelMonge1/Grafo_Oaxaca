@@ -42,8 +42,8 @@ public class Busqueda {
     
     public void busquedaAnchura(String municipio, Grafo grafo, JPanel panel){
         detener(); 
-        grafo.resetearColores();
         grafo.getAristas().forEach(a -> a.setResaltada(false));
+        grafo.getVertices().forEach(v -> v.setColor(Color.WHITE));
 
         Nodo raiz = grafo.getVertices().stream()
                 .filter(n -> n.getMunicipio().equals(municipio))
@@ -59,13 +59,18 @@ public class Busqueda {
 
         cola.add(raiz);
         visitados.add(raiz);
-        raiz.setColor(Color.YELLOW); 
+
+        final boolean[] raizFlash = {true};
 
         timer = new Timer(600, null);
         timer.addActionListener(e -> {
+            raiz.setColor(raizFlash[0] ? Color.CYAN : Color.YELLOW);
+            raizFlash[0] = !raizFlash[0];
+
             if (!cola.isEmpty()) {
                 Nodo actual = cola.poll();
-                actual.setColor(new Color(255, 128, 0)); 
+                
+                if (actual != raiz) actual.setColor(new Color(255, 128, 0)); 
                 
                 secuencia.append(actual.getMunicipio()).append(" -> ");
 
@@ -83,13 +88,16 @@ public class Busqueda {
                         visitados.add(vecino);
                         cola.add(vecino);
                         aristaDescubrimiento.put(vecino, a);
-                        vecino.setColor(Color.YELLOW); 
+                        if (vecino != raiz) vecino.setColor(Color.GRAY); 
                     }
                 }
+                if (actual != raiz) actual.setColor(Color.BLACK); 
                 panel.repaint(); 
             } else {
                 timer.stop();
-                String resultadoFinal = secuencia.substring(0, secuencia.length() - 4);
+                raiz.setColor(Color.BLACK); 
+                panel.repaint();
+                String resultadoFinal = secuencia.substring(0, secuencia.length() - 4); 
                 mostrarReporte(panel, "¡Búsqueda en Anchura (BFS) finalizada!", resultadoFinal);
             }
         });
@@ -98,8 +106,8 @@ public class Busqueda {
 
     public void busquedaProfundidad(String municipio, Grafo grafo, JPanel panel) {
         detener(); 
-        grafo.resetearColores();
         grafo.getAristas().forEach(a -> a.setResaltada(false));
+        grafo.getVertices().forEach(v -> v.setColor(Color.WHITE));
 
         Nodo raiz = grafo.getVertices().stream()
                 .filter(n -> n.getMunicipio().equals(municipio))
@@ -114,14 +122,18 @@ public class Busqueda {
         StringBuilder secuencia = new StringBuilder("Lista de nodos en orden de descubrimiento:\n");
 
         pila.push(raiz);
+        final boolean[] raizFlash = {true};
         
         timer = new Timer(600, e -> {
+            raiz.setColor(raizFlash[0] ? Color.CYAN : Color.YELLOW);
+            raizFlash[0] = !raizFlash[0];
+
             if (!pila.isEmpty()) {
                 Nodo actual = pila.pop();
 
                 if (!visitados.contains(actual)) {
                     visitados.add(actual);
-                    actual.setColor(new Color(255, 128, 0)); 
+                    if (actual != raiz) actual.setColor(Color.GRAY); 
                     
                     secuencia.append(actual.getMunicipio()).append(" -> ");
                     
@@ -138,13 +150,16 @@ public class Busqueda {
                         if (vecino != null && !visitados.contains(vecino)) {
                             pila.push(vecino);
                             aristaDescubrimiento.put(vecino, a);
-                            vecino.setColor(Color.YELLOW); 
+                            if (vecino != raiz) vecino.setColor(Color.GRAY); 
                         }
                     }
+                    if (actual != raiz) actual.setColor(Color.BLACK); 
                     panel.repaint();
                 }
             } else {
                 ((Timer)e.getSource()).stop();
+                raiz.setColor(Color.BLACK);
+                panel.repaint();
                 String resultadoFinal = secuencia.substring(0, secuencia.length() - 4);
                 mostrarReporte(panel, "¡Búsqueda en Profundidad (DFS) finalizada!", resultadoFinal);
             }

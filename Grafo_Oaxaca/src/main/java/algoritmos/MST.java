@@ -10,7 +10,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import javax.swing.JOptionPane;
@@ -41,7 +40,7 @@ public class MST {
     
     public void mstKruskal(Grafo grafo, JPanel panel) {
         detener();
-        grafo.resetearColores();
+        grafo.getVertices().forEach(v -> v.setColor(Color.WHITE));
         grafo.getAristas().forEach(a -> a.setResaltada(false));
 
         List<Arista> aristasOrdenadas = new ArrayList<>(grafo.getAristas());
@@ -67,19 +66,19 @@ public class MST {
             if (!colaMst.isEmpty()) {
                 Arista a = colaMst.poll();
                 a.setResaltada(true); 
-                a.nodoOrigen.setColor(Color.MAGENTA);
-                a.nodoDestino.setColor(Color.MAGENTA);
+                a.nodoOrigen.setColor(Color.BLACK);
+                a.nodoDestino.setColor(Color.BLACK);
                 
                 pesoTotal[0] += a.getPeso();
                 reporte.append(a.nodoOrigen.getMunicipio()).append(" -- ")
                        .append(a.nodoDestino.getMunicipio())
-                       .append(" (Peso: ").append(a.getPeso()).append(")\n");
+                       .append(" (Peso: ").append(a.getPeso()).append(" km)\n"); 
                 
                 panel.repaint();
             } else {
                 ((Timer)e.getSource()).stop();
                 reporte.append("\n===========================\n");
-                reporte.append("PESO TOTAL DEL ÁRBOL: ").append(String.format("%.2f", pesoTotal[0]));
+                reporte.append("PESO TOTAL DEL ÁRBOL: ").append(String.format("%.2f", pesoTotal[0])).append(" km");
                 mostrarReporte(panel, "¡Árbol de Kruskal finalizado!", reporte.toString());
             }
         });
@@ -88,10 +87,8 @@ public class MST {
     
     public void mstPrim(String nombreRaiz, Grafo grafo, JPanel panel) {
         detener();
-        grafo.resetearColores();
-        for (Arista a : grafo.getAristas()) {
-            a.setResaltada(false);
-        }
+        grafo.getVertices().forEach(v -> v.setColor(Color.WHITE));
+        grafo.getAristas().forEach(a -> a.setResaltada(false));
         panel.repaint();
 
         Nodo raiz = grafo.getVertices().stream()
@@ -100,61 +97,51 @@ public class MST {
 
         if (raiz == null) return;
 
-        Set<Nodo> visitados = new HashSet<>();
-        PriorityQueue<Arista> pq = new PriorityQueue<>((a1, a2) -> Float.compare(a1.getPeso(), a2.getPeso()));
-        Queue<Arista> aristasParaAnimar = new LinkedList<>();
-
-        visitados.add(raiz);
-
-        for (Arista a : grafo.getAristas()) {
-            if (a.nodoOrigen.equals(raiz) || a.nodoDestino.equals(raiz)) {
-                pq.add(a);
-            }
-        }
-
-        while (!pq.isEmpty() && visitados.size() < grafo.getVertices().size()) {
-            Arista aristaMasBarata = pq.poll();
-
-            boolean origenVisitado = visitados.contains(aristaMasBarata.nodoOrigen);
-            boolean destinoVisitado = visitados.contains(aristaMasBarata.nodoDestino);
-
-            if (origenVisitado && destinoVisitado) continue;
-
-            Nodo nuevoNodo = origenVisitado ? aristaMasBarata.nodoDestino : aristaMasBarata.nodoOrigen;
-
-            visitados.add(nuevoNodo);
-            aristasParaAnimar.add(aristaMasBarata);
-
-            for (Arista proxima : grafo.getAristas()) {
-                if (proxima.nodoOrigen.equals(nuevoNodo) || proxima.nodoDestino.equals(nuevoNodo)) {
-                    Nodo otroExtremo = proxima.nodoOrigen.equals(nuevoNodo) ? proxima.nodoDestino : proxima.nodoOrigen;
-                    if (!visitados.contains(otroExtremo)) {
-                        pq.add(proxima);
-                    }
-                }
-            }
-        }
+        Set<Nodo> conjuntoS = new HashSet<>();
+        conjuntoS.add(raiz);
 
         StringBuilder reporte = new StringBuilder("Aristas seleccionadas (Prim):\n\n");
         double[] pesoTotal = {0.0}; 
+        final boolean[] raizFlash = {true};
 
         timer = new Timer(800, e -> {
-            if (!aristasParaAnimar.isEmpty()) {
-                Arista a = aristasParaAnimar.poll();
-                a.setResaltada(true);
-                a.nodoOrigen.setColor(Color.CYAN);
-                a.nodoDestino.setColor(Color.CYAN);
+            raiz.setColor(raizFlash[0] ? Color.CYAN : Color.YELLOW);
+            raizFlash[0] = !raizFlash[0];
+
+            Arista aristaLigera = null;
+            double pesoMinimo = Double.MAX_VALUE;
+
+            for (Arista a : grafo.getAristas()) {
+                boolean origenEnS = conjuntoS.contains(a.nodoOrigen);
+                boolean destinoEnS = conjuntoS.contains(a.nodoDestino);
+
+                if (origenEnS ^ destinoEnS) {
+                    if (a.getPeso() < pesoMinimo) {
+                        pesoMinimo = a.getPeso();
+                        aristaLigera = a;
+                    }
+                }
+            }
+
+            if (aristaLigera != null) {
+                aristaLigera.setResaltada(true);
                 
-                pesoTotal[0] += a.getPeso();
-                reporte.append(a.nodoOrigen.getMunicipio()).append(" -- ")
-                       .append(a.nodoDestino.getMunicipio())
-                       .append(" (Peso: ").append(a.getPeso()).append(")\n");
+                Nodo nodoCruzado = conjuntoS.contains(aristaLigera.nodoOrigen) ? aristaLigera.nodoDestino : aristaLigera.nodoOrigen;
+                conjuntoS.add(nodoCruzado);
+                if (nodoCruzado != raiz) nodoCruzado.setColor(Color.BLACK); 
+                
+                pesoTotal[0] += aristaLigera.getPeso();
+                reporte.append(aristaLigera.nodoOrigen.getMunicipio()).append(" -- ")
+                       .append(aristaLigera.nodoDestino.getMunicipio())
+                       .append(" (Peso: ").append(aristaLigera.getPeso()).append(" km)\n"); 
                 
                 panel.repaint();
             } else {
                 ((Timer)e.getSource()).stop();
+                raiz.setColor(Color.BLACK); 
+                panel.repaint();
                 reporte.append("\n===========================\n");
-                reporte.append("PESO TOTAL DEL ÁRBOL: ").append(String.format("%.2f", pesoTotal[0]));
+                reporte.append("PESO TOTAL DEL ÁRBOL: ").append(String.format("%.2f", pesoTotal[0])).append(" km");
                 mostrarReporte(panel, "¡Árbol de Prim finalizado!", reporte.toString());
             }
         });

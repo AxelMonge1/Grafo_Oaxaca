@@ -55,41 +55,41 @@ public class PanelMapa extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    public Grafo getGrafo() {
+ public Grafo getGrafo() {
         return this.grafo;
     }
     
     private void inicializarDatos() {
-        grafo.agregarNodo("Tuxtepec", 635, 190);
-        grafo.agregarNodo("Loma Bonita", 680, 215);
-        grafo.agregarNodo("Huajuapan", 320, 225);
-        grafo.agregarNodo("Nochixtlán", 415, 330);
-        grafo.agregarNodo("Tlaxiaco", 310, 395);
-        grafo.agregarNodo("Oaxaca", 535, 425); 
-        grafo.agregarNodo("Atzompa", 500, 390);          
-        grafo.agregarNodo("J. Amilpas", 510, 405);       
-        grafo.agregarNodo("L. del Camino", 570, 405);    
-        grafo.agregarNodo("C. Amilpas", 595, 425);       
-        grafo.agregarNodo("A. de la Cal", 570, 445);     
-        grafo.agregarNodo("Xoxocotlán", 515, 445);       
-        grafo.agregarNodo("Cuilápam", 485, 465);         
-        grafo.agregarNodo("Zaachila", 500, 490);         
-        grafo.agregarNodo("V. Guerrero", 535, 510);      
-        grafo.agregarNodo("Zimatlán", 480, 540);         
-        grafo.agregarNodo("Ocotlán", 575, 540);          
-        grafo.agregarNodo("Tlacolula", 645, 455);        
-        grafo.agregarNodo("Pinotepa Nal.", 215, 740); 
-        grafo.agregarNodo("Río Grande", 340, 790); 
-        grafo.agregarNodo("Pto. Escondido", 460, 820);    
-        grafo.agregarNodo("Pochutla", 585, 830); 
-        grafo.agregarNodo("Crucecita", 665, 850);           
-        grafo.agregarNodo("Miahuatlán", 570, 610);
-        grafo.agregarNodo("Matías Romero", 895, 440);
-        grafo.agregarNodo("Ixtepec", 845, 570);
-        grafo.agregarNodo("Tehuantepec", 835, 670); 
-        grafo.agregarNodo("Juchitán", 955, 650); 
-        grafo.agregarNodo("U. Hidalgo", 1005, 635); 
-        grafo.agregarNodo("Salina Cruz", 850, 775);
+        grafo.agregarNodo("Tuxtepec", 520, 165);
+        grafo.agregarNodo("Loma Bonita", 560, 185);
+        grafo.agregarNodo("Huajuapan", 205, 205);
+        grafo.agregarNodo("Nochixtlán", 330, 270);
+        grafo.agregarNodo("Tlaxiaco", 240, 315);
+        grafo.agregarNodo("Oaxaca", 430, 345); 
+        grafo.agregarNodo("Atzompa", 400, 320);          
+        grafo.agregarNodo("J. Amilpas", 410, 330);       
+        grafo.agregarNodo("L. del Camino", 460, 330);    
+        grafo.agregarNodo("C. Amilpas", 480, 345);       
+        grafo.agregarNodo("A. de la Cal", 460, 365);     
+        grafo.agregarNodo("Xoxocotlán", 415, 365);       
+        grafo.agregarNodo("Cuilápam", 390, 380);         
+        grafo.agregarNodo("Zaachila", 405, 400);         
+        grafo.agregarNodo("V. Guerrero", 430, 415);      
+        grafo.agregarNodo("Zimatlán", 385, 440);         
+        grafo.agregarNodo("Ocotlán", 465, 440);          
+        grafo.agregarNodo("Tlacolula", 525, 370);        
+        grafo.agregarNodo("Miahuatlán", 460, 490);
+        grafo.agregarNodo("Pinotepa Nal.", 170, 560); 
+        grafo.agregarNodo("Río Grande", 275, 600); 
+        grafo.agregarNodo("Pto. Escondido", 375, 640); 
+        grafo.agregarNodo("Pochutla", 480, 635); 
+        grafo.agregarNodo("Crucecita", 545, 650);            
+        grafo.agregarNodo("Matías Romero", 760, 400);
+        grafo.agregarNodo("Ixtepec", 720, 470);       
+        grafo.agregarNodo("Tehuantepec", 710, 540);   
+        grafo.agregarNodo("Juchitán", 760, 520);      
+        grafo.agregarNodo("U. Hidalgo", 800, 505);    
+        grafo.agregarNodo("Salina Cruz", 695, 595);
     
         grafo.agregarArista("Tehuantepec", "Ixtepec", 34);
         grafo.agregarArista("Ixtepec", "Matías Romero", 69);
@@ -147,13 +147,13 @@ public class PanelMapa extends javax.swing.JPanel {
     }
 
     @Override
-    protected void paintComponent(java.awt.Graphics g) {
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        java.awt.Graphics2D g2 = (java.awt.Graphics2D) g;
+        Graphics2D g2 = (Graphics2D) g;
         
-        g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        
         if (imagenFondo != null) {
             g2.drawImage(imagenFondo, 0, 0, getWidth(), getHeight(), this);
         }
@@ -168,73 +168,98 @@ public class PanelMapa extends javax.swing.JPanel {
             int y2 = a.nodoDestino.getY();
 
             if (a.isResaltada()) {
-                g2.setColor(new java.awt.Color(50, 0, 0, 150)); 
-                g2.setStroke(new java.awt.BasicStroke(5.5f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND));
+                g2.setColor(new Color(50, 0, 0, 150)); 
+                g2.setStroke(new BasicStroke(5.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
                 g2.drawLine(x1, y1 + 2, x2, y2 + 2); 
                 
-                g2.setColor(new java.awt.Color(255, 40, 40, 240)); 
-                g2.setStroke(new java.awt.BasicStroke(4.0f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND));
+                g2.setColor(new Color(255, 40, 40, 240)); 
+                g2.setStroke(new BasicStroke(4.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             } else {
-               
-                g2.setColor(new java.awt.Color(100, 150, 200, 90)); 
-                g2.setStroke(new java.awt.BasicStroke(2.0f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND));
+                g2.setColor(new Color(100, 150, 200, 90)); 
+                g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             }
             g2.drawLine(x1, y1, x2, y2);
 
+            // Textos de KM
             if (!hayAnimacion) {
                 int midX = (x1 + x2) / 2;
                 int midY = (y1 + y2) / 2;
                 
-                g2.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+                g2.setFont(new Font("Segoe UI", Font.BOLD, 10));
                 String pesoTx = (int)a.getPeso() + " km";
                 
-                g2.setColor(new java.awt.Color(255, 255, 255, 220));
+                g2.setColor(new Color(255, 255, 255, 220));
                 g2.drawString(pesoTx, midX - 1, midY - 1);
                 g2.drawString(pesoTx, midX + 1, midY + 1);
                 
-                g2.setColor(new java.awt.Color(60, 60, 60));
+                g2.setColor(new Color(60, 60, 60));
                 g2.drawString(pesoTx, midX, midY);
             }
         }
 
         // --- NODOS ---
-        java.awt.Font fuenteNormal = new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11);
-        java.awt.Font fuenteCapital = new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14);
+        Font fuenteNormal = new Font("Segoe UI", Font.BOLD, 11);
+        Font fuenteCapital = new Font("Segoe UI", Font.BOLD, 14);
 
         for (Nodo n : grafo.getVertices()) {
             int x = n.getX();
             int y = n.getY();
             String nombre = n.getMunicipio();
 
-            g2.setColor(new java.awt.Color(0, 0, 0, 70));
+            g2.setColor(new Color(0, 0, 0, 70));
             g2.fillOval(x - 6, y - 6, 20, 20);
-
+            
             g2.setColor(n.getColor());
             g2.fillOval(x - 9, y - 9, 18, 18);
             
-            g2.setColor(java.awt.Color.DARK_GRAY);
-            g2.setStroke(new java.awt.BasicStroke(2.0f));
+            g2.setColor(Color.DARK_GRAY);
+            g2.setStroke(new BasicStroke(2.0f));
             g2.drawOval(x - 9, y - 9, 18, 18);
 
             g2.setFont(nombre.equals("Oaxaca") ? fuenteCapital : fuenteNormal);
             int anchoTexto = g2.getFontMetrics().stringWidth(nombre);
-            int textoX = x + 14;
+
+            int textoX = x + 14; 
             int textoY = y + 4;
-            
+
+            // Acomodo inteligente de tu compañero
             if (nombre.equals("Oaxaca")) {
-                textoX = x - (anchoTexto / 2); textoY = y - 18;
-            } else if (nombre.equals("Atzompa") || nombre.equals("J. Amilpas") || 
-                       nombre.equals("Xoxocotlán") || nombre.equals("Zaachila")) {
+                textoX = x - (anchoTexto / 2); 
+                textoY = y - 22;
+            } 
+            else if (nombre.equals("Atzompa")) {
                 textoX = x - anchoTexto - 14;
-            } else if (nombre.equals("Nochixtlán") || nombre.equals("Tuxtepec") || nombre.equals("Loma Bonita")) {
-                textoX = x - (anchoTexto / 2); textoY = y - 14;
+                textoY = y + 15; 
+            }
+            else if (nombre.equals("J. Amilpas") || nombre.equals("C. Amilpas")) {
+                textoX = x - (anchoTexto / 2);
+                textoY = y - 24;
+            }
+            else if (nombre.equals("A. de la Cal")) {
+                textoX = x + 14;
+                textoY = y + 26;
+            }
+            else if (nombre.equals("L. del Camino")) {
+                textoX = x + 14;
+                textoY = y + 4;
+            }
+            else if (nombre.equals("Xoxocotlán") || nombre.equals("Zaachila") || nombre.equals("Cuilápam")) {
+                textoX = x - anchoTexto - 14;
+            }
+            else if (nombre.equals("V. Guerrero") || nombre.equals("Ocotlán") || nombre.equals("Zimatlán")) {
+                textoX = x - (anchoTexto / 2);
+                textoY = y + 26;
+            }
+            else if (nombre.equals("Nochixtlán") || nombre.equals("Tuxtepec") || nombre.equals("Huajuapan")) {
+                textoX = x - (anchoTexto / 2); 
+                textoY = y - 16;
             }
 
-            g2.setColor(new java.awt.Color(255, 255, 255, 200));
+            g2.setColor(new Color(255, 255, 255, 220));
             g2.drawString(nombre, textoX - 1, textoY - 1);
             g2.drawString(nombre, textoX + 1, textoY + 1);
-            
-            g2.setColor(nombre.equals("Oaxaca") ? new java.awt.Color(180, 0, 0) : new java.awt.Color(30, 40, 50));
+
+            g2.setColor(nombre.equals("Oaxaca") ? new Color(180, 0, 0) : new Color(30, 40, 50));
             g2.drawString(nombre, textoX, textoY);
         }
     }
