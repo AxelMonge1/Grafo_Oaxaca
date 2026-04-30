@@ -22,6 +22,7 @@ import javax.swing.Timer;
 public class MST {
     private Timer timer;
 
+    //Método que detiene el timer anterior si es que se habia inicializado uno
     public boolean detener() {
         if (timer != null && timer.isRunning()) {
             timer.stop();
@@ -30,6 +31,7 @@ public class MST {
         return false;
     }
     
+    //Muestra en texto el resultado del mst
     private void mostrarReporte(JPanel panel, String titulo, String contenido) {
         JTextArea textArea = new JTextArea(contenido);
         textArea.setEditable(false);
@@ -85,7 +87,7 @@ public class MST {
                 ((Timer)e.getSource()).stop();
                 reporte.append("\n===========================\n");
                 reporte.append("PESO TOTAL DEL ÁRBOL: ").append(String.format("%.2f", pesoTotal[0])).append(" km");
-                mostrarReporte(panel, "¡Árbol de Kruskal finalizado!", reporte.toString());
+                mostrarReporte(panel, "Árbol de Kruskal finalizado", reporte.toString());
             }
         });
         timer.start();
@@ -164,7 +166,7 @@ public class MST {
                 
                 reporte.append("\n===========================\n");
                 reporte.append("PESO TOTAL DEL ÁRBOL: ").append(String.format("%.2f", pesoTotal[0])).append(" km");
-                mostrarReporte(panel, "¡Árbol de Prim finalizado!", reporte.toString());
+                mostrarReporte(panel, "Árbol de Prim finalizado", reporte.toString());
             }
         });
         timer.start();
