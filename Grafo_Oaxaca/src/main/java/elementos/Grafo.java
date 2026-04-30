@@ -105,6 +105,9 @@ public class Grafo {
         for(Nodo v : vertices){
             v.setColor(new Color(0, 110, 220));
             v.setEnConjuntoS(false);
+            
+            v.setTiempoDescubrimiento(0);
+            v.setTiempoFinalizacion(0);
         }
         for(Arista a : aristas) {
             a.setResaltada(false);

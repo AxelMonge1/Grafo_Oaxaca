@@ -148,18 +148,18 @@ public class PanelMapa extends javax.swing.JPanel {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    protected void paintComponent(java.awt.Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
+        java.awt.Graphics2D g2 = (java.awt.Graphics2D) g;
         
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         
         if (imagenFondo != null) {
             g2.drawImage(imagenFondo, 0, 0, 1029, 713, this); 
         }
         
-        // --- DIBUJO DEL CORTEDE PRIM ---
+        // --- DIBUJO DEL CORTE DE PRIM ---
         boolean dibujandoPrim = grafo.getVertices().stream().anyMatch(Nodo::isEnConjuntoS);
         
         if (dibujandoPrim) {
@@ -193,7 +193,7 @@ public class PanelMapa extends javax.swing.JPanel {
                 g2.fill(territorioS);
                 
                 float[] dash = {6.0f, 4.0f}; 
-                g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, dash, 0.0f));
+                g2.setStroke(new java.awt.BasicStroke(2.0f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND, 10.0f, dash, 0.0f));
                 g2.setColor(new Color(20, 150, 50, 220)); 
                 g2.draw(territorioS);
             }
@@ -209,24 +209,24 @@ public class PanelMapa extends javax.swing.JPanel {
             int y2 = a.nodoDestino.getY();
 
             if (a.isResaltada()) {
-                // Ruta confirmada del MST
+                // Ruta confirmada (Línea roja gruesa)
                 g2.setColor(new Color(50, 0, 0, 150)); 
-                g2.setStroke(new BasicStroke(5.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                g2.setStroke(new java.awt.BasicStroke(5.5f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND));
                 g2.drawLine(x1, y1 + 2, x2, y2 + 2); 
                 
                 g2.setColor(new Color(255, 40, 40, 240)); 
-                g2.setStroke(new BasicStroke(4.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                g2.setStroke(new java.awt.BasicStroke(4.0f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND));
                 
             } else if (a.isEnCorte()) {
-                // Ilustración corte
+                // Exploración (Línea punteada verde)
                 float[] dash = {8.0f, 6.0f};
                 g2.setColor(new Color(40, 180, 60, 220)); 
-                g2.setStroke(new BasicStroke(3.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, dash, 0.0f));
+                g2.setStroke(new java.awt.BasicStroke(3.0f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND, 10.0f, dash, 0.0f));
                 
             } else {
-                // Arista ignorada / en espera 
+                // Arista ignorada / en espera (Línea azul)
                 g2.setColor(new Color(100, 150, 200, 90)); 
-                g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                g2.setStroke(new java.awt.BasicStroke(2.0f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND));
             }
             g2.drawLine(x1, y1, x2, y2);
 
@@ -247,10 +247,10 @@ public class PanelMapa extends javax.swing.JPanel {
                     int drawX = (int) (midX + nx * separacion);
                     int drawY = (int) (midY + ny * separacion);
                     
-                    g2.setFont(new Font("Segoe UI", Font.BOLD, 9));
+                    g2.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 9));
                     String pesoTx = distVisual < 55 ? String.valueOf((int)a.getPeso()) : (int)a.getPeso() + " km";
                     
-                    FontMetrics fm = g2.getFontMetrics();
+                    java.awt.FontMetrics fm = g2.getFontMetrics();
                     int textW = fm.stringWidth(pesoTx);
                     
                     g2.setColor(new Color(255, 255, 255, 200));
@@ -266,8 +266,8 @@ public class PanelMapa extends javax.swing.JPanel {
         }
         
         // --- NODOS ---
-        Font fuenteNormal = new Font("Segoe UI", Font.BOLD, 11);
-        Font fuenteCapital = new Font("Segoe UI", Font.BOLD, 14);
+        java.awt.Font fuenteNormal = new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 11);
+        java.awt.Font fuenteCapital = new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14);
 
         for (Nodo n : grafo.getVertices()) {
             int x = n.getX();
@@ -281,7 +281,7 @@ public class PanelMapa extends javax.swing.JPanel {
             g2.fillOval(x - 9, y - 9, 18, 18);
             
             g2.setColor(Color.DARK_GRAY);
-            g2.setStroke(new BasicStroke(2.0f));
+            g2.setStroke(new java.awt.BasicStroke(2.0f));
             g2.drawOval(x - 9, y - 9, 18, 18);
 
             g2.setFont(nombre.equals("Oaxaca") ? fuenteCapital : fuenteNormal);
@@ -290,7 +290,6 @@ public class PanelMapa extends javax.swing.JPanel {
             int textoX = x + 14; 
             int textoY = y + 4;
 
-            // Acomodo inteligente de tu compañero
             if (nombre.equals("Oaxaca")) {
                 textoX = x - (anchoTexto / 2); 
                 textoY = y - 22;
@@ -329,6 +328,29 @@ public class PanelMapa extends javax.swing.JPanel {
 
             g2.setColor(nombre.equals("Oaxaca") ? new Color(180, 0, 0) : new Color(30, 40, 50));
             g2.drawString(nombre, textoX, textoY);
+            
+            // --- DIBUJAR TIEMPOS DFS (d / f) ---
+            if (n.getTiempoDescubrimiento() > 0) {
+                String textoTiempos = n.getTiempoDescubrimiento() + "/";
+                if (n.getTiempoFinalizacion() > 0) {
+                    textoTiempos += n.getTiempoFinalizacion();
+                }
+                
+                g2.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 10));
+                int anchoTiempos = g2.getFontMetrics().stringWidth(textoTiempos);
+                
+                int posX = x - (anchoTiempos / 2);
+                int posY = y + 22; 
+                
+                g2.setColor(new Color(255, 255, 255, 220));
+                g2.drawString(textoTiempos, posX - 1, posY - 1);
+                g2.drawString(textoTiempos, posX + 1, posY + 1);
+                g2.drawString(textoTiempos, posX - 1, posY + 1);
+                g2.drawString(textoTiempos, posX + 1, posY - 1);
+                
+                g2.setColor(new Color(120, 0, 180)); 
+                g2.drawString(textoTiempos, posX, posY);
+            }
         }
     }
 }

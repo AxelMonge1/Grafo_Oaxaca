@@ -104,6 +104,7 @@ public class RutaCorta {
 
     /**
      * Algoritmo que calcula la ruta más corta usando el método de Bellman-Ford
+     * Adaptado para visualización Arista por Arista.
      */
     public void bellmanFord(String origen, String destino, Grafo grafo, JPanel panel) {
         detener();
@@ -122,36 +123,53 @@ public class RutaCorta {
         distancias.put(nodoOrigen, 0.0f);
         nodoOrigen.setColor(Color.BLACK);
 
-        final int[] i = {0};
+        final int[] iteracion = {0};
+        final int[] aristaIndex = {0};
+        final boolean[] huboCambio = {false};
         final List<Arista> todasAristas = grafo.getAristas();
         final boolean[] terminado = {false}; 
 
-        timer = new Timer(1000, e -> {
-            if (i[0] < grafo.getVertices().size() - 1) {
-                boolean huboCambio = false;
-                for (Arista a : todasAristas) {
-                    if (relax(a.nodoOrigen, a.nodoDestino, a, distancias, padres, aristasCamino)) huboCambio = true;
-                    if (relax(a.nodoDestino, a.nodoOrigen, a, distancias, padres, aristasCamino)) huboCambio = true;
-                }
+        timer = new Timer(150, e -> {
+            if (iteracion[0] < grafo.getVertices().size() - 1) {
                 
-                tablaIteraciones.append("Iteración ").append(i[0]+1).append(" completada.\n");
-                
-                grafo.getAristas().forEach(a -> a.setEnCorte(false));
-                aristasCamino.values().forEach(a -> a.setEnCorte(true));
-                
-                for (Nodo n : grafo.getVertices()) {
-                    if (distancias.get(n) != Float.MAX_VALUE && n != nodoOrigen) {
-                        n.setColor(Color.YELLOW); 
+                if (aristaIndex[0] < todasAristas.size()) {
+                    
+                    grafo.getAristas().forEach(a -> a.setResaltada(false));
+                    
+                    Arista a = todasAristas.get(aristaIndex[0]);
+                    a.setResaltada(true); 
+                    
+                    boolean cambio1 = relax(a.nodoOrigen, a.nodoDestino, a, distancias, padres, aristasCamino);
+                    boolean cambio2 = relax(a.nodoDestino, a.nodoOrigen, a, distancias, padres, aristasCamino);
+                    
+                    if (cambio1 || cambio2) {
+                        huboCambio[0] = true;
+                        
+                        grafo.getAristas().forEach(ar -> ar.setEnCorte(false));
+                        aristasCamino.values().forEach(ar -> ar.setEnCorte(true));
+                        
+                        for (Nodo n : grafo.getVertices()) {
+                            if (distancias.get(n) != Float.MAX_VALUE && n != nodoOrigen) {
+                                n.setColor(Color.YELLOW); 
+                            }
+                        }
                     }
+                    
+                    aristaIndex[0]++;
+                    panel.repaint();
+                    
+                } else {
+                    tablaIteraciones.append("Iteración ").append(iteracion[0]+1).append(" completada.\n");
+                    iteracion[0]++;
+                    aristaIndex[0] = 0; 
+                    
+                    if (!huboCambio[0]) {
+                        iteracion[0] = grafo.getVertices().size();
+                    }
+                    huboCambio[0] = false; 
                 }
-
-                i[0]++;
-                panel.repaint();
-                
-                if (!huboCambio) i[0] = grafo.getVertices().size();
 
             } else if (!terminado[0]) {
-                
                 terminado[0] = true;
                 ((Timer)e.getSource()).stop();
                 

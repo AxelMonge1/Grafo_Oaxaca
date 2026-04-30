@@ -122,7 +122,7 @@ public class Busqueda {
 
     /**
      * Método que recorre todos los vertices de un grafo por profundidad (DFS).
-     * Incluye tiempos de descubrimiento y finalización.
+     * Incluye tiempos de descubrimiento y finalización visuales en los nodos.
      */
     public void busquedaProfundidad(String municipio, Grafo grafo, JPanel panel) {
         detener(); 
@@ -131,10 +131,8 @@ public class Busqueda {
             a.setResaltada(false);
             a.setEnCorte(false);
         });
-        grafo.getVertices().forEach(v -> {
-            v.setColor(Color.WHITE);
-            v.setEnConjuntoS(false);
-        });
+        
+        grafo.resetearColores();
 
         Nodo raiz = grafo.getVertices().stream()
                 .filter(n -> n.getMunicipio().equals(municipio))
@@ -148,8 +146,6 @@ public class Busqueda {
         Map<Nodo, Arista> aristaDescubrimiento = new HashMap<>();
         
         int[] tiempo = {0};
-        Map<Nodo, Integer> tiempoDescubrimiento = new HashMap<>();
-        Map<Nodo, Integer> tiempoFinalizacion = new HashMap<>();
         
         StringBuilder secuencia = new StringBuilder("BÚSQUEDA EN PROFUNDIDAD (Tiempos d / f):\n");
         secuencia.append("--------------------------------------------------\n");
@@ -160,22 +156,20 @@ public class Busqueda {
         final boolean[] raizFlash = {true};
         final boolean[] terminado = {false}; 
         
-        timer = new Timer(600, e -> {
+        timer = new Timer(800, e -> { 
             raiz.setColor(raizFlash[0] ? Color.CYAN : Color.YELLOW);
             raizFlash[0] = !raizFlash[0];
 
             if (!pila.isEmpty()) {
-                
                 Nodo actual = pila.peek();
 
                 if (!descubiertos.contains(actual)) {
                     descubiertos.add(actual);
                     tiempo[0]++;
-                    tiempoDescubrimiento.put(actual, tiempo[0]);
+                    actual.setTiempoDescubrimiento(tiempo[0]);
                     if (actual != raiz) actual.setColor(Color.GRAY); 
                 }
 
-                
                 Nodo siguienteVecino = null;
                 Arista aristaHaciaVecino = null;
 
@@ -200,13 +194,13 @@ public class Busqueda {
                     if (!terminados.contains(actual)) {
                         terminados.add(actual);
                         tiempo[0]++;
-                        tiempoFinalizacion.put(actual, tiempo[0]);
+                        actual.setTiempoFinalizacion(tiempo[0]); 
                         if (actual != raiz) actual.setColor(Color.BLACK); 
                         
                         secuencia.append(String.format("%-20s | %-12d | %-12d\n", 
                                 actual.getMunicipio(), 
-                                tiempoDescubrimiento.get(actual), 
-                                tiempoFinalizacion.get(actual)));
+                                actual.getTiempoDescubrimiento(), 
+                                actual.getTiempoFinalizacion()));
                     }
                 }
 

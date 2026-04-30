@@ -102,6 +102,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         cmbSemillaRecorridos = new javax.swing.JComboBox<>();
         rbtnBFS = new javax.swing.JRadioButton();
         rbtnDFS = new javax.swing.JRadioButton();
+        panelVacio = new javax.swing.JPanel();
         pnlContenedorMapa = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -430,7 +431,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
 
         pnlVisualizacion.add(jTabbedPane1, java.awt.BorderLayout.CENTER);
 
-        pnlTarjetas.add(pnlVisualizacion, "vacio");
+        pnlTarjetas.add(pnlVisualizacion, "visualizacion");
 
         panelRecorridos.setName("panelRecorridos"); // NOI18N
 
@@ -488,6 +489,19 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         );
 
         pnlTarjetas.add(panelRecorridos, "recorridos");
+
+        javax.swing.GroupLayout panelVacioLayout = new javax.swing.GroupLayout(panelVacio);
+        panelVacio.setLayout(panelVacioLayout);
+        panelVacioLayout.setHorizontalGroup(
+            panelVacioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 754, Short.MAX_VALUE)
+        );
+        panelVacioLayout.setVerticalGroup(
+            panelVacioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 232, Short.MAX_VALUE)
+        );
+
+        pnlTarjetas.add(panelVacio, "vacio");
 
         javax.swing.GroupLayout pnlInferiorLayout = new javax.swing.GroupLayout(pnlInferior);
         pnlInferior.setLayout(pnlInferiorLayout);
@@ -674,7 +688,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
 
         cargarTablasVisualizacion();
         java.awt.CardLayout layout = (java.awt.CardLayout) pnlTarjetas.getLayout();
-        layout.show(pnlTarjetas, "vacio"); 
+        layout.show(pnlTarjetas, "visualizacion"); 
 
         panelMapa.repaint();
 
@@ -682,10 +696,59 @@ public class FrmMenuSistema extends javax.swing.JFrame {
 
     private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
         // TODO add your handling code here:
+
+        motorBusqueda.detener();
+        motorMST.detener();
+        motorRutas.detener();
+
+        elementos.Grafo grafo = panelMapa.getGrafo();
+        grafo.resetearColores();
+        panelMapa.repaint();
+
+        StringBuilder reporte = new StringBuilder();
+        reporte.append("ANÁLISIS DE COMPLEJIDAD TEMPORAL DE ALGORITMOS\n");
+        reporte.append("========================================================================\n\n");
+
+        reporte.append("1. Recorrido por Anchura (BFS)\n");
+        reporte.append("   - Complejidad: O(V * E)\n");
+        reporte.append("   - Descripción: Usualmente el recorrido por anchura tiene una complejidad temporal de O(V+E), pero debido al uso del Timer en el mismo método, que se ejecuta hasta que la cola queda vacía más el bucle for dentro del Timer, lleva a que pase de O(V+E) a O(V*E).\n\n");
+
+        reporte.append("2. Recorrido por Profundidad (DFS)\n");
+        reporte.append("   - Complejidad: O(V * E)\n");
+        reporte.append("   - Descripción: Al igual que con el recorrido por anchura, la lógica del recorrido tiene una complejidad temporal de O(V+E), pero el uso del Timer hace que se deba recorrer todos los vértices y dentro del Timer hay un bucle for que causa que la complejidad temporal cambie.\n\n");
+
+        reporte.append("3. Árbol de Expansión Mínima (Kruskal)\n");
+        reporte.append("   - Complejidad: O(E log V)\n");
+        reporte.append("   - Descripción: Tanto en el método original creado por Kruskal cómo la implementación hecha para el proyecto, esto es debido a que el ordenamiento de las aristas es lo que hace que la complejidad temporal sea O(E log V) y provoca que, tanto en el algoritmo original como en la implementación, la complejidad temporal sea la misma.\n\n");
+
+        reporte.append("4. Árbol de Expansión Mínima (Prim)\n");
+        reporte.append("   - Complejidad: O(E * V)\n");
+        reporte.append("   - Descripción: A comparación del algoritmo original que tiene una complejidad temporal de O(E log V) o O(E+V log V) esta implementación tiene una complejidad temporal de O(E*V) debido a que no hace uso de una cola de prioridad, sino que realiza una búsqueda exhaustiva debido a que solo usamos 30 vértices.\n\n");
+
+        reporte.append("5. Ruta más corta (Dijkstra)\n");
+        reporte.append("   - Complejidad: O(V * E + V^2)\n");
+        reporte.append("   - Descripción: El algoritmo original tiene una complejidad temporal de O(E log V) pero en la implementación, debido a que en el Timer se recorre las aristas de cada vértice por cada uno de los vértices en el grafo haciendo uso de una cola prioritaria.\n\n");
+
+        reporte.append("6. Ruta más corta (Bellman-Ford)\n");
+        reporte.append("   - Complejidad: O(V * E)\n");
+        reporte.append("   - Descripción: La implementación del Bellman-Ford tiene la misma complejidad que el algoritmo original debido a que la lógica para buscar la ruta más corta ya que el Timer no recorre más veces los vértices ni las aristas y tampoco hace uso de una cola prioritaria como la implementación de Dijkstra.\n");
+
+        javax.swing.JTextArea textArea = new javax.swing.JTextArea(reporte.toString());
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setEditable(false);
+        textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 13));
+        textArea.setBackground(new java.awt.Color(248, 248, 248)); 
+        textArea.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
+        scrollPane.setPreferredSize(new java.awt.Dimension(750, 500));
         
-        // Selecciona un panel vacío en el panel inferior ya que no ocupamos botónes
         java.awt.CardLayout layout = (java.awt.CardLayout) pnlTarjetas.getLayout();
         layout.show(pnlTarjetas, "vacio");
+
+        javax.swing.JOptionPane.showMessageDialog(this, scrollPane, "Reportes de Complejidad Temporal", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
     }//GEN-LAST:event_btnReportesActionPerformed
 
     private void rbtnPrimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnPrimActionPerformed
@@ -836,6 +899,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
     private javax.swing.JPanel panelMST;
     private javax.swing.JPanel panelRecorridos;
     private javax.swing.JPanel panelRutasCortas;
+    private javax.swing.JPanel panelVacio;
     private javax.swing.JPanel pnlContenedorMapa;
     private javax.swing.JPanel pnlInferior;
     private javax.swing.JPanel pnlOpciones;
