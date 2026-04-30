@@ -5,13 +5,7 @@ import elementos.Grafo;
 import elementos.Nodo;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -22,7 +16,6 @@ import javax.swing.Timer;
 public class MST {
     private Timer timer;
 
-    //Método que detiene el timer anterior si es que se habia inicializado uno
     public boolean detener() {
         if (timer != null && timer.isRunning()) {
             timer.stop();
@@ -31,25 +24,30 @@ public class MST {
         return false;
     }
     
-    //Muestra en texto el resultado del mst
     private void mostrarReporte(JPanel panel, String titulo, String contenido) {
-        JTextArea textArea = new JTextArea(contenido);
-        textArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setPreferredSize(new Dimension(350, 250));
-        JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(panel), scrollPane, titulo, JOptionPane.INFORMATION_MESSAGE);
+        JTextArea area = new JTextArea(contenido);
+        area.setEditable(false);
+        area.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 12));
+        JScrollPane scroll = new JScrollPane(area);
+        scroll.setPreferredSize(new Dimension(500, 400));
+        JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(panel), scroll, titulo, JOptionPane.INFORMATION_MESSAGE);
     }
     
     /**
-     * Método que maneja el algoritmo MST Kruskal
-     * 
-     * @param grafo
-     * @param panel 
+     * Algoritmo que calcula MST usando el método de Kruskal
      */
     public void mstKruskal(Grafo grafo, JPanel panel) {
         detener();
-        grafo.getVertices().forEach(v -> v.setColor(Color.WHITE));
-        grafo.getAristas().forEach(a -> a.setResaltada(false));
+        
+        grafo.getVertices().forEach(v -> {
+            v.setColor(Color.WHITE);
+            v.setEnConjuntoS(false); 
+        });
+        grafo.getAristas().forEach(a -> {
+            a.setResaltada(false);
+            a.setEnCorte(false);
+        });
+        panel.repaint();
 
         List<Arista> aristasOrdenadas = new ArrayList<>(grafo.getAristas());
         aristasOrdenadas.sort(Comparator.comparingDouble(Arista::getPeso));
@@ -67,8 +65,10 @@ public class MST {
             }
         }
 
-        StringBuilder reporte = new StringBuilder("Aristas seleccionadas (Kruskal):\n\n");
+        StringBuilder reporte = new StringBuilder("ÁRBOL DE EXPANSIÓN MÍNIMA (Kruskal):\n");
+        reporte.append("--------------------------------------------------\n");
         double[] pesoTotal = {0.0}; 
+        final boolean[] terminado = {false}; 
 
         timer = new Timer(800, e -> {
             if (!colaMst.isEmpty()) {
@@ -78,14 +78,14 @@ public class MST {
                 a.nodoDestino.setColor(Color.BLACK);
                 
                 pesoTotal[0] += a.getPeso();
-                reporte.append(a.nodoOrigen.getMunicipio()).append(" -- ")
-                       .append(a.nodoDestino.getMunicipio())
-                       .append(" (Peso: ").append(a.getPeso()).append(" km)\n"); 
+                reporte.append(String.format("%-15s -- %-15s | %.2f km\n", 
+                        a.nodoOrigen.getMunicipio(), a.nodoDestino.getMunicipio(), a.getPeso()));
                 
                 panel.repaint();
-            } else {
+            } else if (!terminado[0]) {
+                terminado[0] = true;
                 ((Timer)e.getSource()).stop();
-                reporte.append("\n===========================\n");
+                reporte.append("--------------------------------------------------\n");
                 reporte.append("PESO TOTAL DEL ÁRBOL: ").append(String.format("%.2f", pesoTotal[0])).append(" km");
                 mostrarReporte(panel, "Árbol de Kruskal finalizado", reporte.toString());
             }
@@ -94,19 +94,19 @@ public class MST {
     }
     
     /**
-     * Método que maneja el Algoritmo MST Prim
-     * 
-     * @param nombreRaiz
-     * @param grafo
-     * @param panel 
+     * Algoritmo que calcula MST usando el método de Prim
      */
     public void mstPrim(String nombreRaiz, Grafo grafo, JPanel panel) {
         detener();
+
         grafo.getVertices().forEach(v -> {
             v.setColor(Color.WHITE);
             v.setEnConjuntoS(false); 
         });
-        grafo.getAristas().forEach(a -> a.setResaltada(false));
+        grafo.getAristas().forEach(a -> {
+            a.setResaltada(false);
+            a.setEnCorte(false);
+        });
         panel.repaint();
 
         Nodo raiz = grafo.getVertices().stream()
@@ -119,9 +119,11 @@ public class MST {
         conjuntoS.add(raiz);
         raiz.setEnConjuntoS(true); 
 
-        StringBuilder reporte = new StringBuilder("Aristas seleccionadas (Prim):\n\n");
+        StringBuilder reporte = new StringBuilder("ÁRBOL DE EXPANSIÓN MÍNIMA (Prim):\n");
+        reporte.append("--------------------------------------------------\n");
         double[] pesoTotal = {0.0}; 
         final boolean[] raizFlash = {true};
+        final boolean[] terminado = {false};
 
         timer = new Timer(1000, e -> {
             raiz.setColor(raizFlash[0] ? Color.CYAN : Color.YELLOW);
@@ -152,19 +154,19 @@ public class MST {
                 if (nodoCruzado != raiz) nodoCruzado.setColor(Color.BLACK); 
                 
                 pesoTotal[0] += aristaLigera.getPeso();
-                reporte.append(aristaLigera.nodoOrigen.getMunicipio()).append(" -- ")
-                       .append(aristaLigera.nodoDestino.getMunicipio())
-                       .append(" (Peso: ").append(aristaLigera.getPeso()).append(" km)\n"); 
+                reporte.append(String.format("%-15s -- %-15s | %.2f km\n", 
+                        aristaLigera.nodoOrigen.getMunicipio(), aristaLigera.nodoDestino.getMunicipio(), aristaLigera.getPeso()));
                 
                 panel.repaint();
-            } else {
+            } else if (!terminado[0]) {
+                terminado[0] = true; 
                 ((Timer)e.getSource()).stop();
                 raiz.setColor(Color.BLACK); 
                 
                 grafo.getVertices().forEach(v -> v.setEnConjuntoS(false)); 
                 panel.repaint();
                 
-                reporte.append("\n===========================\n");
+                reporte.append("--------------------------------------------------\n");
                 reporte.append("PESO TOTAL DEL ÁRBOL: ").append(String.format("%.2f", pesoTotal[0])).append(" km");
                 mostrarReporte(panel, "Árbol de Prim finalizado", reporte.toString());
             }

@@ -22,11 +22,6 @@ public class RutaCorta {
 
     /**
      * Algoritmo que calcula la ruta más corta usando el método de Dijkstra
-     * No funciona con aristas con peso negativo
-     * @param origen
-     * @param destino
-     * @param grafo
-     * @param panel
      */
     public void dijkstra(String origen, String destino, Grafo grafo, JPanel panel) {
         detener();
@@ -52,17 +47,21 @@ public class RutaCorta {
         distancias.put(nodoOrigen, 0.0f);
         cola.add(nodoOrigen);
 
-        timer = new Timer(400, e -> {
+        final boolean[] terminado = {false}; 
+
+        timer = new Timer(500, e -> {
             if (!cola.isEmpty()) {
                 Nodo actual = cola.poll();
 
                 if (visitados.contains(actual)) return;
                 visitados.add(actual);
 
-                actual.setColor(new Color(0, 150, 0));
+                actual.setColor(new Color(0, 150, 0)); 
 
                 tablaEvolucion.append(String.format("Ciudad: %-20s | Distancia Acumulada: %.2f km\n", 
                                       actual.getMunicipio(), distancias.get(actual)));
+
+                grafo.getAristas().forEach(a -> a.setEnCorte(false));
 
                 for (Arista a : grafo.getAristas()) {
                     Nodo vecino = obtenerVecino(a, actual);
@@ -78,16 +77,23 @@ public class RutaCorta {
                             aristasCamino.put(vecino, a);
 
                             cola.add(vecino);
-
-                            vecino.setColor(Color.LIGHT_GRAY);
+                            vecino.setColor(Color.LIGHT_GRAY); 
                         }
                     }
                 }
+                
+                aristasCamino.values().forEach(a -> a.setEnCorte(true));
+                
+                if (actual.equals(nodoDestino)) {
+                    cola.clear(); 
+                }
                 panel.repaint();
-            } else {
+                
+            } else if (!terminado[0]) {
+                terminado[0] = true;
                 ((Timer)e.getSource()).stop();
 
-                resaltarCaminoFinal(nodoDestino, aristasCamino, padres, panel);
+                resaltarCaminoFinal(nodoOrigen, nodoDestino, aristasCamino, padres, panel, grafo);
 
                 String reporte = generarReporteFinal(nodoOrigen, nodoDestino, distancias, padres, tablaEvolucion.toString());
                 mostrarReporte(panel, "Resultado Dijkstra", reporte);
@@ -98,11 +104,6 @@ public class RutaCorta {
 
     /**
      * Algoritmo que calcula la ruta más corta usando el método de Bellman-Ford
-     * Acepta aristas con peso negativo
-     * @param origen
-     * @param destino
-     * @param grafo
-     * @param panel
      */
     public void bellmanFord(String origen, String destino, Grafo grafo, JPanel panel) {
         detener();
@@ -119,11 +120,13 @@ public class RutaCorta {
 
         grafo.getVertices().forEach(v -> distancias.put(v, Float.MAX_VALUE));
         distancias.put(nodoOrigen, 0.0f);
+        nodoOrigen.setColor(Color.BLACK);
 
         final int[] i = {0};
         final List<Arista> todasAristas = grafo.getAristas();
+        final boolean[] terminado = {false}; 
 
-        timer = new Timer(100, e -> {
+        timer = new Timer(1000, e -> {
             if (i[0] < grafo.getVertices().size() - 1) {
                 boolean huboCambio = false;
                 for (Arista a : todasAristas) {
@@ -132,11 +135,27 @@ public class RutaCorta {
                 }
                 
                 tablaIteraciones.append("Iteración ").append(i[0]+1).append(" completada.\n");
+                
+                grafo.getAristas().forEach(a -> a.setEnCorte(false));
+                aristasCamino.values().forEach(a -> a.setEnCorte(true));
+                
+                for (Nodo n : grafo.getVertices()) {
+                    if (distancias.get(n) != Float.MAX_VALUE && n != nodoOrigen) {
+                        n.setColor(Color.YELLOW); 
+                    }
+                }
+
                 i[0]++;
-                if (huboCambio) panel.repaint();
-            } else {
+                panel.repaint();
+                
+                if (!huboCambio) i[0] = grafo.getVertices().size();
+
+            } else if (!terminado[0]) {
+                
+                terminado[0] = true;
                 ((Timer)e.getSource()).stop();
-                resaltarCaminoFinal(nodoDestino, aristasCamino, padres, panel);
+                
+                resaltarCaminoFinal(nodoOrigen, nodoDestino, aristasCamino, padres, panel, grafo);
                 String reporte = generarReporteFinal(nodoOrigen, nodoDestino, distancias, padres, tablaIteraciones.toString());
                 mostrarReporte(panel, "Resultado Bellman-Ford", reporte);
             }
@@ -144,33 +163,34 @@ public class RutaCorta {
         timer.start();
     }
 
-    // Método relajar que revisa si el nuevo camino es más corto que el camino que ya tenia registrado
     private boolean relax(Nodo u, Nodo v, Arista a, Map<Nodo, Float> d, Map<Nodo, Nodo> p, Map<Nodo, Arista> ac) {
         if (d.get(u) != Float.MAX_VALUE && d.get(u) + a.getPeso() < d.get(v)) {
             d.put(v, d.get(u) + a.getPeso());
             p.put(v, u);
             ac.put(v, a);
-            v.setColor(new Color(255, 140, 0));
             return true;
         }
         return false;
     }
 
-    //Resalta el camino que queda al final
-    private void resaltarCaminoFinal(Nodo destino, Map<Nodo, Arista> ac, Map<Nodo, Nodo> p, JPanel panel) {
-        ac.values().forEach(a -> a.setResaltada(false));
+    private void resaltarCaminoFinal(Nodo origen, Nodo destino, Map<Nodo, Arista> ac, Map<Nodo, Nodo> p, JPanel panel, Grafo grafo) {
+        grafo.getAristas().forEach(a -> {
+            a.setResaltada(false);
+            a.setEnCorte(false);
+        });
+        grafo.getVertices().forEach(v -> v.setColor(Color.WHITE));
+
         Nodo temp = destino;
         while (p.containsKey(temp)) {
             Arista camino = ac.get(temp);
-            if (camino != null) camino.setResaltada(true);
+            if (camino != null) camino.setResaltada(true); 
             temp.setColor(Color.CYAN);
             temp = p.get(temp);
         }
-        if (temp != null) temp.setColor(Color.CYAN);
+        if (temp != null) temp.setColor(Color.CYAN); 
         panel.repaint();
     }
 
-    //Texto para mostrarle al usuario el camino y las distancias en texto
     private String generarReporteFinal(Nodo ori, Nodo des, Map<Nodo, Float> dists, Map<Nodo, Nodo> pads, String tabla) {
         float distTotal = dists.get(des);
         StringBuilder sb = new StringBuilder();
@@ -194,20 +214,20 @@ public class RutaCorta {
         return sb.toString();
     }
 
-    //Reinicia los colores de los vertiecs y si las aristas están resaltadas o no
     private void resetGrafo(Grafo g) {
-        g.getAristas().forEach(a -> a.setResaltada(false));
+        g.getAristas().forEach(a -> {
+            a.setResaltada(false);
+            a.setEnCorte(false);
+        });
         g.resetearColores();
     }
     
-    //Obtiene el vecino de un vertice
     private Nodo obtenerVecino(Arista a, Nodo actual) {
         if (a.nodoOrigen.equals(actual)) return a.nodoDestino;
         if (a.nodoDestino.equals(actual)) return a.nodoOrigen;
         return null;
     }
     
-    //Muestra el reporte que se genera en cada iteración
     private void mostrarReporte(JPanel panel, String titulo, String contenido) {
         JTextArea area = new JTextArea(contenido);
         area.setEditable(false);

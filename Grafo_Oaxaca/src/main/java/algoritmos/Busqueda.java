@@ -22,7 +22,6 @@ import javax.swing.Timer;
 public class Busqueda {
     private Timer timer;
 
-    //Método que detiene el timer anterior si es que se habia inicializado uno
     public boolean detener() {
         if (timer != null && timer.isRunning()) {
             timer.stop();
@@ -31,28 +30,29 @@ public class Busqueda {
         return false;
     }
     
-    //Muestra en texto los municipios que paso por la busqueda mas la distancia
     private void mostrarReporte(JPanel panel, String titulo, String contenido) {
-        JTextArea textArea = new JTextArea(contenido);
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        textArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setPreferredSize(new Dimension(400, 150));
-        JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(panel), scrollPane, titulo, JOptionPane.INFORMATION_MESSAGE);
+        JTextArea area = new JTextArea(contenido);
+        area.setEditable(false);
+        area.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 12));
+        JScrollPane scroll = new JScrollPane(area);
+        scroll.setPreferredSize(new Dimension(500, 400));
+        JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(panel), scroll, titulo, JOptionPane.INFORMATION_MESSAGE);
     }
     
     /**
-     * Método que visita todos los vertices de un grafo por anchura.
-     * Busca todos los vecinos de un vertice antes de pasarse a otro.
-     * @param municipio
-     * @param grafo
-     * @param panel
+     * Método que visita todos los vertices de un grafo por anchura (BFS).
      */
     public void busquedaAnchura(String municipio, Grafo grafo, JPanel panel){
         detener(); 
-        grafo.getAristas().forEach(a -> a.setResaltada(false));
-        grafo.getVertices().forEach(v -> v.setColor(Color.WHITE));
+        
+        grafo.getAristas().forEach(a -> {
+            a.setResaltada(false);
+            a.setEnCorte(false);
+        });
+        grafo.getVertices().forEach(v -> {
+            v.setColor(Color.WHITE);
+            v.setEnConjuntoS(false);
+        });
 
         Nodo raiz = grafo.getVertices().stream()
                 .filter(n -> n.getMunicipio().equals(municipio))
@@ -64,12 +64,14 @@ public class Busqueda {
         Set<Nodo> visitados = new HashSet<>();
         Map<Nodo, Arista> aristaDescubrimiento = new HashMap<>();
         
-        StringBuilder secuencia = new StringBuilder("Secuencia de visita (Nivel por Nivel):\n");
+        StringBuilder secuencia = new StringBuilder("BÚSQUEDA EN ANCHURA (Nivel por Nivel):\n");
+        secuencia.append("--------------------------------------------------\n");
 
         cola.add(raiz);
         visitados.add(raiz);
 
         final boolean[] raizFlash = {true};
+        final boolean[] terminado = {false}; 
 
         timer = new Timer(600, null);
         timer.addActionListener(e -> {
@@ -81,12 +83,9 @@ public class Busqueda {
                 
                 if (actual != raiz) actual.setColor(new Color(255, 128, 0)); 
                 
-                secuencia.append(actual.getMunicipio()).append(" -> ");
+                secuencia.append("-> ").append(actual.getMunicipio()).append("\n");
 
-                Arista aristaPadre = aristaDescubrimiento.get(actual);
-                if (aristaPadre != null) {
-                    aristaPadre.setResaltada(true);
-                }
+                grafo.getAristas().forEach(a -> a.setEnCorte(false));
 
                 for (Arista a : grafo.getAristas()) {
                     Nodo vecino = null;
@@ -100,30 +99,42 @@ public class Busqueda {
                         if (vecino != raiz) vecino.setColor(Color.GRAY); 
                     }
                 }
+                
+                aristaDescubrimiento.values().forEach(a -> a.setEnCorte(true));
+                
                 if (actual != raiz) actual.setColor(Color.BLACK); 
                 panel.repaint(); 
-            } else {
+                
+            } else if (!terminado[0]) {
+                terminado[0] = true; 
                 timer.stop();
                 raiz.setColor(Color.BLACK); 
+                
+                grafo.getAristas().forEach(a -> a.setEnCorte(false));
+                aristaDescubrimiento.values().forEach(a -> a.setResaltada(true));
+                
                 panel.repaint();
-                String resultadoFinal = secuencia.substring(0, secuencia.length() - 4); 
-                mostrarReporte(panel, "Búsqueda en Anchura (BFS) finalizada", resultadoFinal);
+                mostrarReporte(panel, "Resultado de Búsqueda (BFS)", secuencia.toString());
             }
         });
         timer.start();
     }
 
     /**
-     * Método que recorre todos los vertices de un grafo por profundidad.
-     * Busca el cámino más lejano por cada vertice antes de continuar al siguiente vecino.
-     * @param municipio
-     * @param grafo
-     * @param panel
+     * Método que recorre todos los vertices de un grafo por profundidad (DFS).
+     * Incluye tiempos de descubrimiento y finalización.
      */
     public void busquedaProfundidad(String municipio, Grafo grafo, JPanel panel) {
         detener(); 
-        grafo.getAristas().forEach(a -> a.setResaltada(false));
-        grafo.getVertices().forEach(v -> v.setColor(Color.WHITE));
+        
+        grafo.getAristas().forEach(a -> {
+            a.setResaltada(false);
+            a.setEnCorte(false);
+        });
+        grafo.getVertices().forEach(v -> {
+            v.setColor(Color.WHITE);
+            v.setEnConjuntoS(false);
+        });
 
         Nodo raiz = grafo.getVertices().stream()
                 .filter(n -> n.getMunicipio().equals(municipio))
@@ -132,52 +143,88 @@ public class Busqueda {
         if (raiz == null) return;
 
         Stack<Nodo> pila = new Stack<>();
-        Set<Nodo> visitados = new HashSet<>();
+        Set<Nodo> descubiertos = new HashSet<>();
+        Set<Nodo> terminados = new HashSet<>();
         Map<Nodo, Arista> aristaDescubrimiento = new HashMap<>();
         
-        StringBuilder secuencia = new StringBuilder("Lista de nodos en orden de descubrimiento:\n");
+        int[] tiempo = {0};
+        Map<Nodo, Integer> tiempoDescubrimiento = new HashMap<>();
+        Map<Nodo, Integer> tiempoFinalizacion = new HashMap<>();
+        
+        StringBuilder secuencia = new StringBuilder("BÚSQUEDA EN PROFUNDIDAD (Tiempos d / f):\n");
+        secuencia.append("--------------------------------------------------\n");
+        secuencia.append(String.format("%-20s | %-12s | %-12s\n", "Ciudad", "Descubierto", "Finalizado"));
+        secuencia.append("--------------------------------------------------\n");
 
         pila.push(raiz);
         final boolean[] raizFlash = {true};
+        final boolean[] terminado = {false}; 
         
         timer = new Timer(600, e -> {
             raiz.setColor(raizFlash[0] ? Color.CYAN : Color.YELLOW);
             raizFlash[0] = !raizFlash[0];
 
             if (!pila.isEmpty()) {
-                Nodo actual = pila.pop();
+                
+                Nodo actual = pila.peek();
 
-                if (!visitados.contains(actual)) {
-                    visitados.add(actual);
+                if (!descubiertos.contains(actual)) {
+                    descubiertos.add(actual);
+                    tiempo[0]++;
+                    tiempoDescubrimiento.put(actual, tiempo[0]);
                     if (actual != raiz) actual.setColor(Color.GRAY); 
-                    
-                    secuencia.append(actual.getMunicipio()).append(" -> ");
-                    
-                    Arista aristaPadre = aristaDescubrimiento.get(actual);
-                    if (aristaPadre != null) {
-                        aristaPadre.setResaltada(true);
-                    }
-
-                    for (Arista a : grafo.getAristas()) {
-                        Nodo vecino = null;
-                        if (a.nodoOrigen.equals(actual)) vecino = a.nodoDestino;
-                        else if (a.nodoDestino.equals(actual)) vecino = a.nodoOrigen;
-
-                        if (vecino != null && !visitados.contains(vecino)) {
-                            pila.push(vecino);
-                            aristaDescubrimiento.put(vecino, a);
-                            if (vecino != raiz) vecino.setColor(Color.GRAY); 
-                        }
-                    }
-                    if (actual != raiz) actual.setColor(Color.BLACK); 
-                    panel.repaint();
                 }
-            } else {
+
+                
+                Nodo siguienteVecino = null;
+                Arista aristaHaciaVecino = null;
+
+                for (Arista a : grafo.getAristas()) {
+                    Nodo vecino = null;
+                    if (a.nodoOrigen.equals(actual)) vecino = a.nodoDestino;
+                    else if (a.nodoDestino.equals(actual)) vecino = a.nodoOrigen;
+
+                    if (vecino != null && !descubiertos.contains(vecino)) {
+                        siguienteVecino = vecino;
+                        aristaHaciaVecino = a;
+                        break; 
+                    }
+                }
+
+                if (siguienteVecino != null) {
+                    pila.push(siguienteVecino);
+                    aristaDescubrimiento.put(siguienteVecino, aristaHaciaVecino);
+                } else {
+                    
+                    pila.pop();
+                    if (!terminados.contains(actual)) {
+                        terminados.add(actual);
+                        tiempo[0]++;
+                        tiempoFinalizacion.put(actual, tiempo[0]);
+                        if (actual != raiz) actual.setColor(Color.BLACK); 
+                        
+                        secuencia.append(String.format("%-20s | %-12d | %-12d\n", 
+                                actual.getMunicipio(), 
+                                tiempoDescubrimiento.get(actual), 
+                                tiempoFinalizacion.get(actual)));
+                    }
+                }
+
+                grafo.getAristas().forEach(a -> a.setEnCorte(false));
+                aristaDescubrimiento.values().forEach(a -> a.setEnCorte(true));
+                
+                panel.repaint();
+                
+            } else if (!terminado[0]) {
+                terminado[0] = true; 
                 ((Timer)e.getSource()).stop();
                 raiz.setColor(Color.BLACK);
+                
+                grafo.getAristas().forEach(a -> a.setEnCorte(false));
+                aristaDescubrimiento.values().forEach(a -> a.setResaltada(true));
+                
                 panel.repaint();
-                String resultadoFinal = secuencia.substring(0, secuencia.length() - 4);
-                mostrarReporte(panel, "Búsqueda en Profundidad finalizada", resultadoFinal);
+                mostrarReporte(panel, "Resultado de Búsqueda (DFS)", secuencia.toString());
             }
         });
         timer.start();

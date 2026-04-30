@@ -160,41 +160,43 @@ public class PanelMapa extends javax.swing.JPanel {
         }
         
         // --- DIBUJO DEL CORTEDE PRIM ---
-        java.awt.geom.Area territorioS = new java.awt.geom.Area();
+        boolean dibujandoPrim = grafo.getVertices().stream().anyMatch(Nodo::isEnConjuntoS);
         
-        int radio = 22; 
-        int diametro = radio * 2;
-        
-        for (Nodo n : grafo.getVertices()) {
-            if (n.isEnConjuntoS()) {
-               
-                java.awt.geom.Ellipse2D.Double circulo = new java.awt.geom.Ellipse2D.Double(n.getX() - radio, n.getY() - radio, diametro, diametro);
-                territorioS.add(new java.awt.geom.Area(circulo)); 
-            }
-        }
-        
-        java.awt.BasicStroke trazoGrueso = new java.awt.BasicStroke(diametro, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND);
-        
-        for (Arista a : grafo.getAristas()) {
-            if (a.isResaltada()) { 
-                java.awt.geom.Line2D.Double linea = new java.awt.geom.Line2D.Double(
-                    a.getNodoOrigen().getX(), a.getNodoOrigen().getY(), 
-                    a.getNodoDestino().getX(), a.getNodoDestino().getY()
-                );
-                java.awt.Shape formaLinea = trazoGrueso.createStrokedShape(linea);
-                territorioS.add(new java.awt.geom.Area(formaLinea));
-            }
-        }
-        
-        if (!territorioS.isEmpty()) {
+        if (dibujandoPrim) {
+            java.awt.geom.Area territorioS = new java.awt.geom.Area();
             
-            g2.setColor(new Color(40, 200, 80, 45)); 
-            g2.fill(territorioS);
+            int radio = 22; 
+            int diametro = radio * 2;
             
-            float[] dash = {6.0f, 4.0f}; 
-            g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, dash, 0.0f));
-            g2.setColor(new Color(20, 150, 50, 220)); 
-            g2.draw(territorioS);
+            for (Nodo n : grafo.getVertices()) {
+                if (n.isEnConjuntoS()) {
+                    java.awt.geom.Ellipse2D.Double circulo = new java.awt.geom.Ellipse2D.Double(n.getX() - radio, n.getY() - radio, diametro, diametro);
+                    territorioS.add(new java.awt.geom.Area(circulo)); 
+                }
+            }
+            
+            java.awt.BasicStroke trazoGrueso = new java.awt.BasicStroke(diametro, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND);
+            
+            for (Arista a : grafo.getAristas()) {
+                if (a.isResaltada()) { 
+                    java.awt.geom.Line2D.Double linea = new java.awt.geom.Line2D.Double(
+                        a.getNodoOrigen().getX(), a.getNodoOrigen().getY(), 
+                        a.getNodoDestino().getX(), a.getNodoDestino().getY()
+                    );
+                    java.awt.Shape formaLinea = trazoGrueso.createStrokedShape(linea);
+                    territorioS.add(new java.awt.geom.Area(formaLinea));
+                }
+            }
+            
+            if (!territorioS.isEmpty()) {
+                g2.setColor(new Color(40, 200, 80, 45)); 
+                g2.fill(territorioS);
+                
+                float[] dash = {6.0f, 4.0f}; 
+                g2.setStroke(new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 10.0f, dash, 0.0f));
+                g2.setColor(new Color(20, 150, 50, 220)); 
+                g2.draw(territorioS);
+            }
         }
         
         // --- ARISTAS Y PESOS ---

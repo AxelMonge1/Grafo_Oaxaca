@@ -103,7 +103,12 @@ public class Grafo {
     
     public void resetearColores(){
         for(Nodo v : vertices){
-            v.setColor(Color.WHITE);
+            v.setColor(new Color(0, 110, 220));
+            v.setEnConjuntoS(false);
+        }
+        for(Arista a : aristas) {
+            a.setResaltada(false);
+            a.setEnCorte(false); 
         }
     }
     

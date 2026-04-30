@@ -9,6 +9,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
     private PanelMapa panelMapa;
     private algoritmos.Busqueda motorBusqueda = new algoritmos.Busqueda();
     private algoritmos.MST motorMST = new algoritmos.MST();
+    private algoritmos.RutaCorta motorRutas = new algoritmos.RutaCorta();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmMenuSistema.class.getName());
         
     /**
@@ -344,29 +345,24 @@ public class FrmMenuSistema extends javax.swing.JFrame {
             .addGroup(panelRutasCortasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelRutasCortasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelRutasCortasLayout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel4)
                     .addGroup(panelRutasCortasLayout.createSequentialGroup()
                         .addGap(16, 16, 16)
                         .addGroup(panelRutasCortasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelRutasCortasLayout.createSequentialGroup()
                                 .addComponent(rbtnDijkstra)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(rbtnBellmanFord)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(panelRutasCortasLayout.createSequentialGroup()
-                                .addGroup(panelRutasCortasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(panelRutasCortasLayout.createSequentialGroup()
-                                        .addComponent(lblOrigen)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(cmbOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panelRutasCortasLayout.createSequentialGroup()
-                                        .addComponent(lblDestino)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(cmbDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE)))
-                                .addContainerGap(314, Short.MAX_VALUE))))))
+                                .addComponent(rbtnBellmanFord))
+                            .addGroup(panelRutasCortasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelRutasCortasLayout.createSequentialGroup()
+                                    .addComponent(lblOrigen)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cmbOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelRutasCortasLayout.createSequentialGroup()
+                                    .addComponent(lblDestino)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(cmbDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addContainerGap(320, Short.MAX_VALUE))
         );
         panelRutasCortasLayout.setVerticalGroup(
             panelRutasCortasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -600,14 +596,24 @@ public class FrmMenuSistema extends javax.swing.JFrame {
 
                 // --- Panel RUTAS CORTAS ---
                 else if ("panelRutasCortas".equals(nombreTarjeta)) {
-                    // faltan aquí
                     String origen = cmbOrigen.getSelectedItem().toString();
                     String destino = cmbDestino.getSelectedItem().toString();
 
+                    // Validar que no seleccionaron la misma ciudad
+                    if (origen.equals(destino)) {
+                        javax.swing.JOptionPane.showMessageDialog(this, 
+                            "El origen y el destino no pueden ser la misma ciudad.", 
+                            "Aviso", 
+                            javax.swing.JOptionPane.WARNING_MESSAGE);
+                        return; 
+                    }
+
                     if (rbtnDijkstra.isSelected()) {
-                        javax.swing.JOptionPane.showMessageDialog(this, "Ejecutando Dijkstra de " + origen + " a " + destino + "\n(Método pendiente de implementar)");
+                        // Llamada al método de Dijkstra
+                        motorRutas.dijkstra(origen, destino, grafo, panelMapa);
                     } else if (rbtnBellmanFord.isSelected()) {
-                        javax.swing.JOptionPane.showMessageDialog(this, "Ejecutando Bellman-Ford de " + origen + " a " + destino + "\n(Método pendiente de implementar)");
+                        // Llamada al método de Bellman-Ford
+                        motorRutas.bellmanFord(origen, destino, grafo, panelMapa);
                     }
                 }
 
