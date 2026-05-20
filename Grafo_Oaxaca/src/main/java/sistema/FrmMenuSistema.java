@@ -23,15 +23,17 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         
         lblCiudadPrim.setVisible(false);
         cmbCiudadPrim.setVisible(false);
+        rbtnPrim.setVisible(false);
     }
 
    private void inicializarMapa() {
        // Inclusión de panelmapa en el panel vacío que dejé
         panelMapa = new PanelMapa();
-
         pnlContenedorMapa.setLayout(new java.awt.BorderLayout());
-        pnlContenedorMapa.add(panelMapa, java.awt.BorderLayout.CENTER);
-
+        javax.swing.JScrollPane scrollMapa = new javax.swing.JScrollPane(panelMapa);
+        scrollMapa.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollMapa.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        pnlContenedorMapa.add(scrollMapa, java.awt.BorderLayout.CENTER);
         pnlContenedorMapa.revalidate();
         pnlContenedorMapa.repaint();
     }
@@ -103,12 +105,12 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         rbtnBFS = new javax.swing.JRadioButton();
         rbtnDFS = new javax.swing.JRadioButton();
         panelVacio = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
         pnlContenedorMapa = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Sistema de Ruta y Análisis de Grafos - Oaxaca");
         setBackground(new java.awt.Color(51, 102, 255));
-        setResizable(false);
 
         pnlOpciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -204,7 +206,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                 .addComponent(btnArbolMinimo, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnRutasCortas, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 309, Short.MAX_VALUE)
                 .addComponent(btnVisualizacion, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -216,6 +218,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         );
 
         pnlInferior.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        pnlInferior.setPreferredSize(new java.awt.Dimension(1029, 200));
 
         btnConfirmar.setBackground(new java.awt.Color(51, 102, 255));
         btnConfirmar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -281,13 +284,13 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                         .addGroup(panelMSTLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panelMSTLayout.createSequentialGroup()
                                 .addComponent(rbtnKruskal)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGap(18, 18, 18)
                                 .addComponent(rbtnPrim))
                             .addGroup(panelMSTLayout.createSequentialGroup()
                                 .addComponent(lblCiudadPrim)
                                 .addGap(18, 18, 18)
                                 .addComponent(cmbCiudadPrim, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(288, Short.MAX_VALUE))))
+                        .addContainerGap(289, Short.MAX_VALUE))))
         );
         panelMSTLayout.setVerticalGroup(
             panelMSTLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -302,7 +305,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                 .addGroup(panelMSTLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCiudadPrim)
                     .addComponent(cmbCiudadPrim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(131, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         pnlTarjetas.add(panelMST, "mst");
@@ -382,7 +385,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                 .addGroup(panelRutasCortasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblDestino)
                     .addComponent(cmbDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pnlTarjetas.add(panelRutasCortas, "rutas");
@@ -485,7 +488,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                 .addGroup(panelRecorridosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(cmbSemillaRecorridos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(131, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         pnlTarjetas.add(panelRecorridos, "recorridos");
@@ -498,7 +501,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         );
         panelVacioLayout.setVerticalGroup(
             panelVacioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 232, Short.MAX_VALUE)
+            .addGap(0, 159, Short.MAX_VALUE)
         );
 
         pnlTarjetas.add(panelVacio, "vacio");
@@ -522,14 +525,14 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                 .addComponent(btnConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(98, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
             .addGroup(pnlInferiorLayout.createSequentialGroup()
                 .addComponent(pnlTarjetas, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pnlContenedorMapa.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        pnlContenedorMapa.setPreferredSize(new java.awt.Dimension(1029, 713));
+        pnlContenedorMapa.setPreferredSize(new java.awt.Dimension(900, 530));
         pnlContenedorMapa.setRequestFocusEnabled(false);
 
         javax.swing.GroupLayout pnlContenedorMapaLayout = new javax.swing.GroupLayout(pnlContenedorMapa);
@@ -540,8 +543,10 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         );
         pnlContenedorMapaLayout.setVerticalGroup(
             pnlContenedorMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 709, Short.MAX_VALUE)
+            .addGap(0, 578, Short.MAX_VALUE)
         );
+
+        jScrollPane3.setViewportView(pnlContenedorMapa);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -553,7 +558,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlInferior, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlContenedorMapa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -563,10 +568,10 @@ public class FrmMenuSistema extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlOpciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlContenedorMapa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(pnlInferior, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(pnlInferior, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
 
         pack();
@@ -751,12 +756,6 @@ public class FrmMenuSistema extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnReportesActionPerformed
 
-    private void rbtnPrimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnPrimActionPerformed
-        // TODO add your handling code here:
-        lblCiudadPrim.setVisible(true);
-        cmbCiudadPrim.setVisible(true);
-    }//GEN-LAST:event_rbtnPrimActionPerformed
-
     private void rbtnKruskalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnKruskalActionPerformed
         // TODO add your handling code here:
         lblCiudadPrim.setVisible(false);
@@ -815,6 +814,12 @@ public class FrmMenuSistema extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void rbtnPrimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnPrimActionPerformed
+        // TODO add your handling code here:
+        lblCiudadPrim.setVisible(true);
+        cmbCiudadPrim.setVisible(true);
+    }//GEN-LAST:event_rbtnPrimActionPerformed
 
     
     /**
@@ -892,6 +897,7 @@ public class FrmMenuSistema extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblCiudadPrim;
     private javax.swing.JLabel lblDestino;

@@ -38,7 +38,7 @@ public class RutaCorta {
         Map<Nodo, Float> distancias = new HashMap<>();
         Map<Nodo, Nodo> padres = new HashMap<>();
         Map<Nodo, Arista> aristasCamino = new HashMap<>();
-        StringBuilder tablaEvolucion = new StringBuilder("Evolución de Distancias (Dijkstra):\n");
+        StringBuilder tablaEvolucion = new StringBuilder("Evolución de Distancias:\n");
 
         PriorityQueue<Nodo> cola = new PriorityQueue<>(Comparator.comparingDouble(n -> distancias.get(n)));
         Set<Nodo> visitados = new HashSet<>();
@@ -58,7 +58,7 @@ public class RutaCorta {
 
                 actual.setColor(new Color(0, 150, 0)); 
 
-                tablaEvolucion.append(String.format("Ciudad: %-20s | Distancia Acumulada: %.2f km\n", 
+                tablaEvolucion.append(String.format(" • %-22s | Distancia Acumulada: %.2f km\n", 
                                       actual.getMunicipio(), distancias.get(actual)));
 
                 grafo.getAristas().forEach(a -> a.setEnCorte(false));
@@ -95,6 +95,7 @@ public class RutaCorta {
 
                 resaltarCaminoFinal(nodoOrigen, nodoDestino, aristasCamino, padres, panel, grafo);
 
+                // Se invoca compartiendo la misma firma limpia
                 String reporte = generarReporteFinal(nodoOrigen, nodoDestino, distancias, padres, tablaEvolucion.toString());
                 mostrarReporte(panel, "Resultado Dijkstra", reporte);
             }
@@ -117,7 +118,8 @@ public class RutaCorta {
         Map<Nodo, Float> distancias = new HashMap<>();
         Map<Nodo, Nodo> padres = new HashMap<>();
         Map<Nodo, Arista> aristasCamino = new HashMap<>();
-        StringBuilder tablaIteraciones = new StringBuilder("Tabla de Distancias por Iteración:\n");
+        
+        StringBuilder registroIteraciones = new StringBuilder("Evolución por Iteración:\n");
 
         grafo.getVertices().forEach(v -> distancias.put(v, Float.MAX_VALUE));
         distancias.put(nodoOrigen, 0.0f);
@@ -133,8 +135,7 @@ public class RutaCorta {
             if (iteracion[0] < grafo.getVertices().size() - 1) {
                 
                 if (aristaIndex[0] < todasAristas.size()) {
-                    
-                    grafo.getAristas().forEach(a -> a.setResaltada(false));
+                    todasAristas.forEach(ar -> ar.setResaltada(false));
                     
                     Arista a = todasAristas.get(aristaIndex[0]);
                     a.setResaltada(true); 
@@ -144,8 +145,7 @@ public class RutaCorta {
                     
                     if (cambio1 || cambio2) {
                         huboCambio[0] = true;
-                        
-                        grafo.getAristas().forEach(ar -> ar.setEnCorte(false));
+                        todasAristas.forEach(ar -> ar.setEnCorte(false));
                         aristasCamino.values().forEach(ar -> ar.setEnCorte(true));
                         
                         for (Nodo n : grafo.getVertices()) {
@@ -159,7 +159,14 @@ public class RutaCorta {
                     panel.repaint();
                     
                 } else {
-                    tablaIteraciones.append("Iteración ").append(iteracion[0]+1).append(" completada.\n");
+                    long nodosAlcanzados = distancias.values().stream().filter(d -> d != Float.MAX_VALUE).count();
+                    registroIteraciones.append(" • Iteración ").append(iteracion[0] + 1)
+                                      .append(": ").append(nodosAlcanzados).append(" municipios evaluados.");
+                    if (!huboCambio[0]) {
+                        registroIteraciones.append(" (El grafo convergió, sin más cambios).");
+                    }
+                    registroIteraciones.append("\n");
+
                     iteracion[0]++;
                     aristaIndex[0] = 0; 
                     
@@ -173,8 +180,14 @@ public class RutaCorta {
                 terminado[0] = true;
                 ((Timer)e.getSource()).stop();
                 
+                todasAristas.forEach(ar -> {
+                    ar.setResaltada(false);
+                    ar.setEnCorte(false);
+                });
+                
                 resaltarCaminoFinal(nodoOrigen, nodoDestino, aristasCamino, padres, panel, grafo);
-                String reporte = generarReporteFinal(nodoOrigen, nodoDestino, distancias, padres, tablaIteraciones.toString());
+                
+                String reporte = generarReporteFinal(nodoOrigen, nodoDestino, distancias, padres, registroIteraciones.toString());
                 mostrarReporte(panel, "Resultado Bellman-Ford", reporte);
             }
         });
@@ -209,13 +222,24 @@ public class RutaCorta {
         panel.repaint();
     }
 
+    /**
+     * Reporte unificado y formateado para estructuras Monospaced de JTextArea
+     */
     private String generarReporteFinal(Nodo ori, Nodo des, Map<Nodo, Float> dists, Map<Nodo, Nodo> pads, String tabla) {
         float distTotal = dists.get(des);
         StringBuilder sb = new StringBuilder();
-        sb.append("RUTA ÓPTIMA:\n");
+        
+        sb.append("=========================================================\n");
+        sb.append("                 REPORTES DE RUTA ÓPTIMA                 \n");
+        sb.append("=========================================================\n\n");
+        
+        sb.append("[1] RESUMEN DE TRAYECTO\n");
+        sb.append("---------------------------------------------------------\n");
+        sb.append(" • Origen : ").append(ori.getMunicipio()).append("\n");
+        sb.append(" • Destino: ").append(des.getMunicipio()).append("\n");
         
         if (distTotal == Float.MAX_VALUE) {
-            sb.append("No existe camino entre las ciudades.\n");
+            sb.append(" • Estado : ❌ No existe conexión terrestre entre ciudades.\n");
         } else {
             List<String> camino = new ArrayList<>();
             Nodo t = des;
@@ -223,12 +247,34 @@ public class RutaCorta {
                 camino.add(0, t.getMunicipio());
                 t = pads.get(t);
             }
-            sb.append(String.join(" -> ", camino)).append("\n");
-            sb.append("Distancia Total: ").append(String.format("%.2f km", distTotal)).append("\n");
+            sb.append(" • Ruta   : ").append(String.join(" -> ", camino)).append("\n");
+            sb.append(" • Costo  : ").append(String.format("%.2f km", distTotal)).append("\n");
         }
         
-        sb.append("\n----------------------------------\n");
-        sb.append(tabla);
+        sb.append("\n[2] TRAZA Y LOG DE EVOLUCIÓN\n");
+        sb.append("---------------------------------------------------------\n");
+        sb.append(tabla.trim()).append("\n");
+        
+        sb.append("\n[3] MATRIZ DE DISTANCIAS FINALES DESDE EL ORIGEN\n");
+        sb.append("---------------------------------------------------------\n");
+        sb.append(String.format(" %-22s | %-14s | %-15s\n", "Municipio", "Costo Mínimo", "Predecesor"));
+        sb.append("---------------------------------------------------------\n");
+        
+        List<Nodo> listaNodos = new ArrayList<>(dists.keySet());
+        listaNodos.sort((n1, n2) -> n1.getMunicipio().compareTo(n2.getMunicipio()));
+        
+        for (Nodo n : listaNodos) {
+            String nombre = n.getMunicipio();
+            float d = dists.get(n);
+            String distStr = (d == Float.MAX_VALUE) ? "Infinito" : String.format("%.2f km", d);
+            
+            Nodo padre = pads.get(n);
+            String padreStr = (padre == null) ? "Ninguno (Origen)" : padre.getMunicipio();
+            
+            sb.append(String.format(" %-22s | %-14s | %-15s\n", nombre, distStr, padreStr));
+        }
+        sb.append("=========================================================\n");
+        
         return sb.toString();
     }
 
@@ -251,7 +297,7 @@ public class RutaCorta {
         area.setEditable(false);
         area.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 12));
         JScrollPane scroll = new JScrollPane(area);
-        scroll.setPreferredSize(new Dimension(500, 400));
+        scroll.setPreferredSize(new Dimension(550, 450)); // Ampliado ligeramente para evitar scroll horizontal molesto
         JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(panel), scroll, titulo, JOptionPane.INFORMATION_MESSAGE);
     }
 }

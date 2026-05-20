@@ -33,6 +33,7 @@ public class PanelMapa extends javax.swing.JPanel {
 
         this.grafo = new Grafo();
         inicializarDatos();
+        this.setPreferredSize(new java.awt.Dimension(1029, 713));
     }
 
     /**
