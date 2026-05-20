@@ -95,7 +95,6 @@ public class RutaCorta {
 
                 resaltarCaminoFinal(nodoOrigen, nodoDestino, aristasCamino, padres, panel, grafo);
 
-                // Se invoca compartiendo la misma firma limpia
                 String reporte = generarReporteFinal(nodoOrigen, nodoDestino, distancias, padres, tablaEvolucion.toString());
                 mostrarReporte(panel, "Resultado Dijkstra", reporte);
             }
@@ -105,7 +104,6 @@ public class RutaCorta {
 
     /**
      * Algoritmo que calcula la ruta más corta usando el método de Bellman-Ford
-     * Adaptado para visualización Arista por Arista.
      */
     public void bellmanFord(String origen, String destino, Grafo grafo, JPanel panel) {
         detener();
@@ -222,9 +220,6 @@ public class RutaCorta {
         panel.repaint();
     }
 
-    /**
-     * Reporte unificado y formateado para estructuras Monospaced de JTextArea
-     */
     private String generarReporteFinal(Nodo ori, Nodo des, Map<Nodo, Float> dists, Map<Nodo, Nodo> pads, String tabla) {
         float distTotal = dists.get(des);
         StringBuilder sb = new StringBuilder();
